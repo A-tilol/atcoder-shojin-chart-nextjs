@@ -1,10 +1,18 @@
 "use client";
 
+import Chart, { ChartData } from "@/components/chart";
+import { WAIT_MSEC } from "@/utils/api";
+import { sleep } from "@/utils/utils";
 import dynamic from "next/dynamic";
+import { PlotData } from "plotly.js";
 import React, { useState } from "react";
+import {
+  accumulateYScore,
+  makeTooltipText,
+  retrieveUniqueACSubs,
+} from "../utils/dataProcessing";
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 // import {PlotParams} from 'react-plotly.js'
-import { Config, Layout, PlotData } from "plotly.js";
 
 const TitleHeader = () => {
   return (
@@ -33,7 +41,6 @@ const InputFields: React.FC<InputFieldsProps> = ({
   onInputChange,
 }) => {
   const handleChange = (e: any) => {
-    console.log(e);
     onInputChange(e.target.id, e.target.value);
   };
 
@@ -44,7 +51,7 @@ const InputFields: React.FC<InputFieldsProps> = ({
           htmlFor="user-id-input"
           className="block mb-2 text-sm font-medium text-gray-900"
         >
-          UserID
+          User ID
         </label>
         <input
           type="text"
@@ -61,7 +68,7 @@ const InputFields: React.FC<InputFieldsProps> = ({
           htmlFor="rival-ids-input"
           className="block mb-2 text-sm font-medium text-gray-900"
         >
-          RivalIDs
+          Rival IDs
         </label>
         <input
           type="text"
@@ -100,41 +107,11 @@ const Content = () => {
   let [userID, setUserID] = useState("");
   let [rivalIDs, setRivalIDs] = useState("");
   let [period, setPeriod] = useState(90);
+  let [chartData, setChartData] = useState({});
 
-  const data: Partial<PlotData>[] = [
-    {
-      type: "scatter",
-      mode: "lines",
-      x: [0, 1, 2, 3, 4],
-      y: [10, 4, 2, 6, 7],
-    },
-    {
-      type: "scatter",
-      mode: "lines",
-      x: [0, 1, 2, 3, 4],
-      y: [5, 7, 8, 10, 5],
-    },
-  ];
-  const layout: Partial<Layout> = {
-    title: "Shojin Chart",
-    legend: {
-      title: {
-        text: "Coders",
-      },
-    },
-    margin: {
-      t: 30,
-      b: 0,
-      l: 15,
-      r: 15,
-    },
-  };
-  const config: Partial<Config> = {
-    displayModeBar: false,
-  };
+  const metrics = "獲得スコア";
 
   const handleInputChange = (id: string, value: string) => {
-    console.log(id, value);
     if (id == "user-id-input") {
       setUserID(value);
     } else if (id == "rival-ids-input") {
@@ -144,7 +121,53 @@ const Content = () => {
     }
   };
 
-  // if press draw button, draw chart
+  const updateChart = async () => {
+    if (userID === "") return;
+
+    const rivals = rivalIDs
+      .split(", ")
+      .map((u) => u.trim())
+      .filter((u) => u !== "");
+    const users = [userID, ...rivals];
+    console.log(users);
+
+    fetchChartData(users);
+  };
+
+  const fetchChartData = async (users: string[]) => {
+    const dates = Array.from({ length: period + 1 }, (_, i) => {
+      const date = new Date(Date.now() - (period - i) * 24 * 60 * 60 * 1000);
+      return date.toISOString().split("T")[0];
+    });
+
+    const usersData: Partial<PlotData>[] = [];
+    for (const [i, user] of users.entries()) {
+      if (i > 0) {
+        await sleep(WAIT_MSEC);
+      }
+      const subs = await retrieveUniqueACSubs(user, period);
+
+      const data: Partial<PlotData> = {
+        type: "scatter",
+        mode: "lines",
+        name: user,
+        x: dates,
+        y: accumulateYScore(subs, period, metrics),
+        text: makeTooltipText(dates, subs),
+        hovertemplate: "%{text}",
+      };
+      usersData.push(data);
+    }
+
+    const chartData: ChartData = {
+      data: usersData,
+      period: period,
+      metrics: metrics,
+    };
+    console.log(chartData);
+
+    setChartData(chartData);
+  };
 
   return (
     <>
@@ -158,15 +181,18 @@ const Content = () => {
           onInputChange={handleInputChange}
         />
 
-        <Plot
-          className="w-full mt-10"
-          data={data}
-          layout={layout}
-          config={config}
-          onHover={(data) => {
-            console.log(data);
-          }}
-        />
+        <div>
+          <button
+            className="text-white bg-gradient-to-r from-cyan-400 via-cyan-500 to-cyan-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+            onClick={updateChart}
+          >
+            Draw Chart
+          </button>
+        </div>
+
+        <div className="w-full mt-10">
+          <Chart chartData={chartData} />
+        </div>
       </div>
     </>
   );
