@@ -1,9 +1,8 @@
 "use client";
 
-import Chart, { ChartData } from "@/components/chart";
+import { ChartData } from "@/components/chart";
 import { WAIT_MSEC } from "@/utils/api";
 import { sleep } from "@/utils/utils";
-import dynamic from "next/dynamic";
 import { PlotData } from "plotly.js";
 import React, { useState } from "react";
 import {
@@ -11,8 +10,12 @@ import {
   makeTooltipText,
   retrieveUniqueACSubs,
 } from "../utils/dataProcessing";
-const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
-// import {PlotParams} from 'react-plotly.js'
+
+import dynamic from "next/dynamic";
+
+const DynamicChart = dynamic(() => import("@/components/chart"), {
+  ssr: false,
+});
 
 const TitleHeader = () => {
   return (
@@ -21,7 +24,7 @@ const TitleHeader = () => {
         <span className="text-transparent bg-clip-text bg-gradient-to-r to-emerald-600 from-sky-400">
           Atcoder
         </span>{" "}
-        <span className="text-gray-700">精進チャート</span>
+        <span className="text-gray-700">精進チャート🐾</span>
       </h1>
     </>
   );
@@ -98,6 +101,61 @@ const InputFields: React.FC<InputFieldsProps> = ({
           placeholder="90"
           onChange={handleChange}
         />
+      </div>
+    </>
+  );
+};
+
+const TweetArea = () => {
+  const copyTweetTextToClipboard = () => {};
+  const cheeringWords1 = [
+    "えらい",
+    "かしこい",
+    "すごい",
+    "てんさい",
+    "そんけいする",
+    "すばらしい",
+    "ゆうしゅう",
+    "さいこう",
+    "りっぱ",
+  ];
+  const cheeringWords2 = ["とうとい"];
+  const cheeringWords3 = ["ひれふしちゃう"];
+
+  const cheeringWord = "えらい";
+  const text = `今日の{UserID}さんの精進は10AC+1000点獲得だにゃん🐾 ${cheeringWord}にゃ！
+
+ACした問題の最高難度は500点！(ABC D)
+https://atilol.atcoder-shojin-shart-nextjs.github.io
+#AtCoder_Shojin_Chart`;
+
+  return (
+    <>
+      <div>
+        <textarea
+          id="message"
+          className="block p-2.5 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+          style={{ width: "520px" }}
+          rows={5}
+          value={text}
+          readOnly={true}
+        ></textarea>
+      </div>
+      <div>
+        <button
+          className="mt-2 text-white bg-gradient-to-r from-cyan-400 via-cyan-500 to-cyan-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+          onClick={copyTweetTextToClipboard}
+        >
+          Copy To Clipboard
+        </button>
+
+        <a
+          className="mt-2 text-white bg-gradient-to-r from-cyan-400 via-cyan-500 to-cyan-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+          href={`https://x.com/intent/tweet?text=${encodeURIComponent(text)}`}
+          target="_blank"
+        >
+          Tweet (Post)
+        </a>
       </div>
     </>
   );
@@ -191,7 +249,11 @@ const Content = () => {
         </div>
 
         <div className="w-full mt-10">
-          <Chart chartData={chartData} />
+          <DynamicChart chartData={chartData} />
+        </div>
+
+        <div className="mt-5">
+          <TweetArea />
         </div>
       </div>
     </>
