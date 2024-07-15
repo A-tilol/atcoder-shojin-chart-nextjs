@@ -1,9 +1,5 @@
+import { API_WAIT_MSEC, MAX_SUB, SUB_API_URL } from "@/config/constants";
 import { sleep } from "./utils";
-
-const SUB_API_URL =
-  "https://kenkoooo.com/atcoder/atcoder-api/v3/user/submissions";
-const MAX_SUB = 500;
-export const WAIT_MSEC = 1000;
 
 export const getUserSubmissions = async (
   user: string,
@@ -19,7 +15,7 @@ export const getUserSubmissions = async (
     return subs;
   }
 
-  await sleep(WAIT_MSEC);
+  await sleep(API_WAIT_MSEC);
   const maxEpoch = Math.max(...subs.map((sub: any) => sub.epoch_second));
   return subs.concat(await getUserSubmissions(user, maxEpoch));
 };

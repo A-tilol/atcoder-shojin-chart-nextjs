@@ -1,7 +1,6 @@
 "use client";
 
 import { ChartData } from "@/components/chart";
-import { WAIT_MSEC } from "@/utils/api";
 import { sleep } from "@/utils/utils";
 import { PlotData } from "plotly.js";
 import React, { useState } from "react";
@@ -11,6 +10,7 @@ import {
   retrieveUniqueACSubs,
 } from "../utils/dataProcessing";
 
+import { API_WAIT_MSEC, TWEET_TEXT_TEMPLATE } from "@/config/constants";
 import dynamic from "next/dynamic";
 
 const DynamicChart = dynamic(() => import("@/components/chart"), {
@@ -71,7 +71,7 @@ const InputFields: React.FC<InputFieldsProps> = ({
           htmlFor="rival-ids-input"
           className="block mb-2 text-sm font-medium text-gray-900"
         >
-          Rival IDs
+          Rival IDs (Optional)
         </label>
         <input
           type="text"
@@ -106,52 +106,38 @@ const InputFields: React.FC<InputFieldsProps> = ({
   );
 };
 
-const TweetArea = () => {
-  const copyTweetTextToClipboard = () => {};
-  const cheeringWords1 = [
-    "えらい",
-    "かしこい",
-    "すごい",
-    "てんさい",
-    "そんけいする",
-    "すばらしい",
-    "ゆうしゅう",
-    "さいこう",
-    "りっぱ",
-  ];
-  const cheeringWords2 = ["とうとい"];
-  const cheeringWords3 = ["ひれふしちゃう"];
+interface TweetAreaProps {
+  onCopyClick: () => void;
+}
 
+const TweetArea: React.FC<TweetAreaProps> = ({ onCopyClick }) => {
   const cheeringWord = "えらい";
-  const text = `今日の{UserID}さんの精進は10AC+1000点獲得だにゃん🐾 ${cheeringWord}にゃ！
-
-ACした問題の最高難度は500点！(ABC D)
-https://atilol.atcoder-shojin-shart-nextjs.github.io
-#AtCoder_Shojin_Chart`;
 
   return (
     <>
-      <div>
+      <div className="flex justify-center">
         <textarea
           id="message"
           className="block p-2.5 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
           style={{ width: "520px" }}
           rows={5}
-          value={text}
+          value={TWEET_TEXT_TEMPLATE}
           readOnly={true}
         ></textarea>
       </div>
-      <div>
+      <div className="flex justify-center">
         <button
           className="mt-2 text-white bg-gradient-to-r from-cyan-400 via-cyan-500 to-cyan-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
-          onClick={copyTweetTextToClipboard}
+          onClick={onCopyClick}
         >
           Copy To Clipboard
         </button>
 
         <a
           className="mt-2 text-white bg-gradient-to-r from-cyan-400 via-cyan-500 to-cyan-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
-          href={`https://x.com/intent/tweet?text=${encodeURIComponent(text)}`}
+          href={`https://x.com/intent/tweet?text=${encodeURIComponent(
+            TWEET_TEXT_TEMPLATE
+          )}`}
           target="_blank"
         >
           Tweet (Post)
@@ -165,7 +151,12 @@ const Content = () => {
   let [userID, setUserID] = useState("");
   let [rivalIDs, setRivalIDs] = useState("");
   let [period, setPeriod] = useState(90);
-  let [chartData, setChartData] = useState({});
+  let [chartData, setChartData] = useState({
+    data: [null],
+    period: 0,
+    metrics: "",
+  });
+  let [chartBlob, setChartBlob] = useState(new Blob());
 
   const metrics = "獲得スコア";
 
@@ -201,7 +192,7 @@ const Content = () => {
     const usersData: Partial<PlotData>[] = [];
     for (const [i, user] of users.entries()) {
       if (i > 0) {
-        await sleep(WAIT_MSEC);
+        await sleep(API_WAIT_MSEC);
       }
       const subs = await retrieveUniqueACSubs(user, period);
 
@@ -227,6 +218,24 @@ const Content = () => {
     setChartData(chartData);
   };
 
+  const handleChartChange = (chartBlob_: Blob) => {
+    console.log(chartBlob_);
+    setChartBlob(chartBlob_);
+  };
+
+  const handleCopyToClipboard = () => {
+    const clipboardItem = new ClipboardItem({
+      "image/png": chartBlob,
+      "text/plain": new Blob([TWEET_TEXT_TEMPLATE], { type: "text/plain" }),
+    });
+    navigator.clipboard
+      .write([clipboardItem])
+      .then(() => console.log("copied."))
+      .catch((error) => {
+        console.error("クリップボードにコピーできませんでした。", error);
+      });
+  };
+
   return (
     <>
       <div className="m-5">
@@ -249,11 +258,14 @@ const Content = () => {
         </div>
 
         <div className="w-full mt-10">
-          <DynamicChart chartData={chartData} />
+          <DynamicChart
+            chartData={chartData}
+            onChartChange={handleChartChange}
+          />
         </div>
 
-        <div className="mt-5">
-          <TweetArea />
+        <div className="mt-7">
+          <TweetArea onCopyClick={handleCopyToClipboard} />
         </div>
       </div>
     </>

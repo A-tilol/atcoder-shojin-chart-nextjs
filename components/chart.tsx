@@ -1,11 +1,8 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import { Config, Layout } from "plotly.js";
 import Plotly from "plotly.js-dist-min";
 import React, { useEffect, useRef } from "react";
-
-const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 
 export interface ChartData {
   data: any[];
@@ -14,10 +11,11 @@ export interface ChartData {
 }
 
 interface ChartProps {
-  chartData: any;
+  chartData: ChartData;
+  onChartChange: (blob: Blob) => void;
 }
 
-const Chart: React.FC<ChartProps> = ({ chartData }) => {
+const Chart: React.FC<ChartProps> = ({ chartData, onChartChange }) => {
   const chartRef = useRef(null);
 
   const layout: Partial<Layout> = {
@@ -29,12 +27,13 @@ const Chart: React.FC<ChartProps> = ({ chartData }) => {
       tickformat: "%Y-%m",
       tickangle: -45,
     },
+    yaxis: {
+      title: "Score",
+    },
     autosize: true,
     margin: {
       t: 35,
-      // b: 0,
-      l: 50,
-      r: 15,
+      r: 50,
     },
   };
 
@@ -42,48 +41,37 @@ const Chart: React.FC<ChartProps> = ({ chartData }) => {
     displayModeBar: false,
   };
 
-  const text = `今日の{UserID}さんの精進は10AC+1000点獲得だにゃん🐾 {cheeringWord}にゃ！
-
-  ACした問題の最高難度は500点！(ABC D)
-  https://atilol.atcoder-shojin-shart-nextjs.github.io
-  #AtCoder_Shojin_Chart`;
-
   useEffect(() => {
     if (chartRef.current && chartData.data !== undefined) {
       Plotly.newPlot(chartRef.current, chartData.data, layout, config);
+      handleChartChange();
     }
   }, [chartData]);
 
-  const handleCopyToClipboard = async () => {
-    if (chartRef.current) {
-      const imageData = await Plotly.toImage(chartRef.current, {
-        format: "png",
-        width: 600,
-        height: 400,
-      });
-
-      const response = await fetch(imageData);
-      const blob = await response.blob();
-
-      const clipboardItem = new ClipboardItem({
-        "image/png": blob,
-      });
-      navigator.clipboard
-        .write([clipboardItem])
-        .then(() => console.log("copied."))
-        .catch((error) => {
-          console.error("クリップボードにコピーできませんでした。", error);
-        });
+  const handleChartChange = async () => {
+    if (!chartRef.current) {
+      return;
     }
+
+    const imageData = await Plotly.toImage(chartRef.current, {
+      format: "png",
+      width: 600,
+      height: 400,
+    });
+    const response = await fetch(imageData);
+    const blob = await response.blob();
+
+    console.log(blob);
+    onChartChange(blob);
   };
 
-  if (chartData.data === undefined) {
+  if (chartData.period === 0) {
     return <></>;
   }
 
   return (
     <>
-      <div ref={chartRef} onClick={handleCopyToClipboard}></div>
+      <div ref={chartRef}></div>
     </>
   );
 };
