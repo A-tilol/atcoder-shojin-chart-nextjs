@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 
 const nextConfig = {
-  basePath: "/atcoder-shojin-chart-nextjs",
+  basePath: process.env.BASE_PATH,
   trailingSlash: true,
   output: "export",
 };

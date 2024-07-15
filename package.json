@@ -11,6 +11,7 @@
     "deploy": "gh-pages --dotfiles -d out"
   },
   "dependencies": {
+    "@next/third-parties": "^15.0.0-canary.67",
     "next": "^14.2.5",
     "plotly.js": "^2.33.0",
     "plotly.js-dist": "^2.33.0",
