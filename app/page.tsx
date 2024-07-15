@@ -3,7 +3,7 @@
 import { ChartData } from "@/components/chart";
 import { sleep } from "@/utils/utils";
 import { PlotData } from "plotly.js";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   accumulateYScore,
   makeTooltipText,
@@ -107,11 +107,40 @@ const InputFields: React.FC<InputFieldsProps> = ({
 };
 
 interface TweetAreaProps {
-  onCopyClick: () => void;
+  chartData: ChartData;
+  onCopyClick: (tweetText: string) => void;
 }
 
-const TweetArea: React.FC<TweetAreaProps> = ({ onCopyClick }) => {
-  const cheeringWord = "えらい";
+const TweetArea: React.FC<TweetAreaProps> = ({ chartData, onCopyClick }) => {
+  let [tweetText, setTweetText] = useState("");
+
+  useEffect(() => {
+    if (chartData.period === 0) {
+      return;
+    }
+
+    const chooseCheeringWord = () => {
+      console.log(chartData.data[0]);
+      return "えらい";
+    };
+
+    const cheeringWord = chooseCheeringWord();
+    const userID = chartData.data[0].name;
+    const tweText = TWEET_TEXT_TEMPLATE.replace("{USER_ID}", userID)
+      .replace("{SHOJIN}", "SHOJIN")
+      .replace("{CHEERING_WORD}", cheeringWord)
+      .replace("{MAX_POINTS}", "{MAX_POINTS}")
+      .replace("{PLOBLEM}", "{PLOBLEM}");
+    setTweetText(tweText);
+  }, [chartData]);
+
+  const handleCopyClick = () => {
+    onCopyClick(tweetText);
+  };
+
+  if (chartData.period === 0) {
+    return <></>;
+  }
 
   return (
     <>
@@ -121,26 +150,24 @@ const TweetArea: React.FC<TweetAreaProps> = ({ onCopyClick }) => {
           className="block p-2.5 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
           style={{ width: "520px" }}
           rows={5}
-          value={TWEET_TEXT_TEMPLATE}
+          value={tweetText}
           readOnly={true}
         ></textarea>
       </div>
       <div className="flex justify-center">
         <button
           className="mt-2 text-white bg-gradient-to-r from-cyan-400 via-cyan-500 to-cyan-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
-          onClick={onCopyClick}
+          onClick={handleCopyClick}
         >
           Copy To Clipboard
         </button>
 
         <a
           className="mt-2 text-white bg-gradient-to-r from-cyan-400 via-cyan-500 to-cyan-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
-          href={`https://x.com/intent/tweet?text=${encodeURIComponent(
-            TWEET_TEXT_TEMPLATE
-          )}`}
+          href={`https://x.com/intent/tweet`}
           target="_blank"
         >
-          Tweet (Post)
+          Tweet
         </a>
       </div>
     </>
@@ -223,10 +250,10 @@ const Content = () => {
     setChartBlob(chartBlob_);
   };
 
-  const handleCopyToClipboard = () => {
+  const handleCopyToClipboard = (tweetText: string) => {
     const clipboardItem = new ClipboardItem({
       "image/png": chartBlob,
-      "text/plain": new Blob([TWEET_TEXT_TEMPLATE], { type: "text/plain" }),
+      "text/plain": new Blob([tweetText], { type: "text/plain" }),
     });
     navigator.clipboard
       .write([clipboardItem])
@@ -265,7 +292,10 @@ const Content = () => {
         </div>
 
         <div className="mt-7">
-          <TweetArea onCopyClick={handleCopyToClipboard} />
+          <TweetArea
+            chartData={chartData}
+            onCopyClick={handleCopyToClipboard}
+          />
         </div>
       </div>
     </>
