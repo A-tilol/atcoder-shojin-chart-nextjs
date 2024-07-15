@@ -7,6 +7,7 @@ import React, { useEffect, useState } from "react";
 import {
   accumulateYScore,
   makeTooltipText,
+  makeUserSummary,
   retrieveUniqueACSubs,
 } from "../utils/dataProcessing";
 
@@ -107,38 +108,39 @@ const InputFields: React.FC<InputFieldsProps> = ({
 };
 
 interface TweetAreaProps {
-  chartData: ChartData;
+  userSummary: UserSummary;
   onCopyClick: (tweetText: string) => void;
 }
 
-const TweetArea: React.FC<TweetAreaProps> = ({ chartData, onCopyClick }) => {
+const TweetArea: React.FC<TweetAreaProps> = ({ userSummary, onCopyClick }) => {
   let [tweetText, setTweetText] = useState("");
 
   useEffect(() => {
-    if (chartData.period === 0) {
+    if (userSummary.userID === "") {
       return;
     }
 
     const chooseCheeringWord = () => {
-      console.log(chartData.data[0]);
       return "えらい";
     };
 
     const cheeringWord = chooseCheeringWord();
-    const userID = chartData.data[0].name;
-    const tweText = TWEET_TEXT_TEMPLATE.replace("{USER_ID}", userID)
-      .replace("{SHOJIN}", "SHOJIN")
+    const tweText = TWEET_TEXT_TEMPLATE.replace("{USER_ID}", userSummary.userID)
+      .replace(
+        "{SHOJIN}",
+        `${userSummary.ACs}ACs ${userSummary.totalPoints}Pts`
+      )
       .replace("{CHEERING_WORD}", cheeringWord)
-      .replace("{MAX_POINTS}", "{MAX_POINTS}")
-      .replace("{PLOBLEM}", "{PLOBLEM}");
+      .replace("{MAX_POINTS}", userSummary.maxPoints.toString())
+      .replace("{PLOBLEM}", userSummary.maxPointPlobrem);
     setTweetText(tweText);
-  }, [chartData]);
+  }, [userSummary]);
 
   const handleCopyClick = () => {
     onCopyClick(tweetText);
   };
 
-  if (chartData.period === 0) {
+  if (userSummary.userID === "") {
     return <></>;
   }
 
@@ -174,20 +176,36 @@ const TweetArea: React.FC<TweetAreaProps> = ({ chartData, onCopyClick }) => {
   );
 };
 
+export interface UserSummary {
+  userID: string;
+  ACs: number;
+  totalPoints: number;
+  maxPoints: number;
+  maxPointPlobrem: string;
+}
+
 const Content = () => {
   let [userID, setUserID] = useState("");
   let [rivalIDs, setRivalIDs] = useState("");
   let [period, setPeriod] = useState(90);
-  let [chartData, setChartData] = useState({
-    data: [null],
+  let [chartData, setChartData] = useState<ChartData>({
+    data: [],
     period: 0,
     metrics: "",
+  });
+  let [userSummary, setUserSummary] = useState<UserSummary>({
+    userID: "",
+    ACs: 0,
+    totalPoints: 0,
+    maxPoints: 0,
+    maxPointPlobrem: "",
   });
   let [chartBlob, setChartBlob] = useState(new Blob());
 
   const metrics = "獲得スコア";
 
   const handleInputChange = (id: string, value: string) => {
+    console.log(id, value);
     if (id == "user-id-input") {
       setUserID(value);
     } else if (id == "rival-ids-input") {
@@ -197,7 +215,7 @@ const Content = () => {
     }
   };
 
-  const updateChart = async () => {
+  const handleDrawChartClick = async () => {
     if (userID === "") return;
 
     const rivals = rivalIDs
@@ -233,6 +251,10 @@ const Content = () => {
         hovertemplate: "%{text}",
       };
       usersData.push(data);
+
+      if (i === 0) {
+        setUserSummary(makeUserSummary(user, dates[dates.length - 1], subs));
+      }
     }
 
     const chartData: ChartData = {
@@ -241,7 +263,6 @@ const Content = () => {
       metrics: metrics,
     };
     console.log(chartData);
-
     setChartData(chartData);
   };
 
@@ -278,7 +299,7 @@ const Content = () => {
         <div>
           <button
             className="text-white bg-gradient-to-r from-cyan-400 via-cyan-500 to-cyan-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
-            onClick={updateChart}
+            onClick={handleDrawChartClick}
           >
             Draw Chart
           </button>
@@ -293,7 +314,7 @@ const Content = () => {
 
         <div className="mt-7">
           <TweetArea
-            chartData={chartData}
+            userSummary={userSummary}
             onCopyClick={handleCopyToClipboard}
           />
         </div>

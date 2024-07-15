@@ -1,3 +1,4 @@
+import { UserSummary } from "@/app/page";
 import { getUserSubmissions } from "./api";
 
 export const retrieveUniqueACSubs = async (
@@ -98,4 +99,36 @@ export const makeTooltipText = (dates: string[], subs: any[]): string[] => {
     }
     return text;
   });
+};
+
+export const makeUserSummary = (
+  userID: string,
+  today: string,
+  subs: any[]
+): UserSummary => {
+  console.log(userID, today, subs);
+  const todaySubs = subs.filter((sub) => {
+    return sub.date === today;
+  });
+
+  const userSummary: UserSummary = {
+    userID: userID,
+    ACs: todaySubs.length,
+    totalPoints: 0,
+    maxPointPlobrem: "",
+    maxPoints: 0,
+  };
+
+  for (const sub of todaySubs) {
+    userSummary.totalPoints += sub.point;
+    if (sub.point > userSummary.maxPoints) {
+      userSummary.maxPoints = sub.point;
+      userSummary.maxPointPlobrem = `${sub.contest_id} ${sub.problem_id
+        .split("_")
+        .pop()}`;
+    }
+  }
+  console.log(userSummary);
+
+  return userSummary;
 };
