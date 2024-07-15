@@ -11,7 +11,14 @@ import {
   retrieveUniqueACSubs,
 } from "../utils/dataProcessing";
 
-import { API_WAIT_MSEC, TWEET_TEXT_TEMPLATE } from "@/config/constants";
+import {
+  API_WAIT_MSEC,
+  CHEERING_WORDS0,
+  CHEERING_WORDS1,
+  CHEERING_WORDS2,
+  CHEERING_WORDS3,
+  TWEET_TEXT_TEMPLATE,
+} from "@/config/constants";
 import dynamic from "next/dynamic";
 
 const DynamicChart = dynamic(() => import("@/components/chart"), {
@@ -121,7 +128,21 @@ const TweetArea: React.FC<TweetAreaProps> = ({ userSummary, onCopyClick }) => {
     }
 
     const chooseCheeringWord = () => {
-      return "えらい";
+      const getElementAtRandom = (arr: string[]) => {
+        return arr[Math.floor(Math.random() * arr.length)];
+      };
+
+      if (userSummary.totalPoints === 0) {
+        return getElementAtRandom(CHEERING_WORDS0);
+      } else if (userSummary.totalPoints < 2000) {
+        return getElementAtRandom(CHEERING_WORDS1);
+      } else if (userSummary.totalPoints < 4000) {
+        return "ちょー" + getElementAtRandom(CHEERING_WORDS1);
+      } else if (userSummary.totalPoints < 5000) {
+        return getElementAtRandom(CHEERING_WORDS2);
+      } else {
+        return getElementAtRandom(CHEERING_WORDS3);
+      }
     };
 
     const cheeringWord = chooseCheeringWord();
@@ -132,7 +153,10 @@ const TweetArea: React.FC<TweetAreaProps> = ({ userSummary, onCopyClick }) => {
       )
       .replace("{CHEERING_WORD}", cheeringWord)
       .replace("{MAX_POINTS}", userSummary.maxPoints.toString())
-      .replace("{PLOBLEM}", userSummary.maxPointPlobrem);
+      .replace(
+        "{PLOBLEM}",
+        userSummary.ACs === 0 ? "なし" : userSummary.maxPointPlobrem
+      );
     setTweetText(tweText);
   }, [userSummary]);
 

@@ -3,6 +3,12 @@ export const SUB_API_URL =
 export const MAX_SUB = 500;
 export const API_WAIT_MSEC = 1000;
 
+export const CHEERING_WORDS0 = [
+  "きゅうけい",
+  "ちょーかいふく",
+  "またあした",
+  "いきててえらい",
+];
 export const CHEERING_WORDS1 = [
   "えらい",
   "かしこい",
