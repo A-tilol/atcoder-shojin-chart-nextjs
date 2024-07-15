@@ -9,6 +9,9 @@ export const metadata: Metadata = {
   title: "AtCoder 精進チャート",
   description:
     "日々の精進の確認とライバルとの比較によりモチベーションを向上させるにゃ🐾",
+  other: {
+    "google-site-verification": process.env.GOOGLE_SITE_VERIFICATION || "",
+  },
 };
 
 export default function RootLayout({
