@@ -54,7 +54,7 @@ const Chart: React.FC<ChartProps> = ({ chartData, onChartChange }) => {
       },
       autosize: true,
       margin: {
-        t: 35,
+        t: 60,
         r: 50,
       },
     };

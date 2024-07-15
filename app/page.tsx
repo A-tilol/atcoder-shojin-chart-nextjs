@@ -20,6 +20,8 @@ import {
   TWEET_TEXT_TEMPLATE,
 } from "@/config/constants";
 import dynamic from "next/dynamic";
+import { FaXTwitter } from "react-icons/fa6";
+import { MdOutlineContentCopy } from "react-icons/md";
 
 const DynamicChart = dynamic(() => import("@/components/chart"), {
   ssr: false,
@@ -28,7 +30,7 @@ const DynamicChart = dynamic(() => import("@/components/chart"), {
 const TitleHeader = () => {
   return (
     <>
-      <h1 className="font-serif mb-6 text-3xl font-extrabold md:text-2xl lg:text-3xl">
+      <h1 className="font-serif mb-6 text-3xl font-extrabold md:text-3xl lg:text-4xl">
         <span className="text-transparent bg-clip-text bg-gradient-to-r to-emerald-600 from-sky-400">
           Atcoder
         </span>{" "}
@@ -170,7 +172,10 @@ const TweetArea: React.FC<TweetAreaProps> = ({ userSummary, onCopyClick }) => {
 
   return (
     <>
-      <div className="flex justify-center">
+      <div className="flex justify-center gray-800">
+        「Copy To Clipboard」を押したあと、「Tweet」を押してこぴぺしてください！
+      </div>
+      <div className="flex justify-center mt-2">
         <textarea
           id="message"
           className="block p-2.5 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
@@ -182,18 +187,24 @@ const TweetArea: React.FC<TweetAreaProps> = ({ userSummary, onCopyClick }) => {
       </div>
       <div className="flex justify-center">
         <button
-          className="mt-2 text-white bg-gradient-to-r from-cyan-400 via-cyan-500 to-cyan-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+          className="mt-2 font-medium text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
           onClick={handleCopyClick}
         >
-          Copy To Clipboard
+          <div className="flex items-center">
+            <MdOutlineContentCopy />
+            <span className="ml-2">Copy To Clipboard</span>
+          </div>
         </button>
 
         <a
-          className="mt-2 text-white bg-gradient-to-r from-cyan-400 via-cyan-500 to-cyan-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+          className="ml-3 mt-2 text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
           href={`https://x.com/intent/tweet`}
           target="_blank"
         >
-          Tweet
+          <div className="flex items-center">
+            <FaXTwitter />
+            <span className="ml-2">Tweet</span>
+          </div>
         </a>
       </div>
     </>
@@ -336,7 +347,7 @@ const Content = () => {
           />
         </div>
 
-        <div className="mt-7">
+        <div className="mt-10">
           <TweetArea
             userSummary={userSummary}
             onCopyClick={handleCopyToClipboard}
