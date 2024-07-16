@@ -41,21 +41,31 @@ const Chart: React.FC<ChartProps> = ({ chartData, onChartChange }) => {
 
     const layout: Partial<Layout> = {
       title: "Shojin Chart",
-      legend: { title: { text: "Coders" } },
+      legend: {
+        xanchor: "left",
+        yanchor: "top",
+        x: 0.01,
+        y: 1,
+      },
       font: { family: "Courier New, monospace", size: 18, color: "Gray" },
       xaxis: {
         dtick: chartData.period < 700 ? "M1" : "M6",
         tickformat: "%Y-%m",
         tickangle: -45,
+        tickfont: {
+          size: 16,
+        },
       },
       yaxis: {
         title: "Score",
       },
-      autosize: true,
       margin: {
         t: 60,
+        l: 60,
         r: 50,
       },
+      autosize: true,
+      dragmode: false,
     };
 
     const config: Partial<Config> = {
