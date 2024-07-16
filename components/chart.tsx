@@ -1,7 +1,6 @@
 "use client";
 
-import { Config, Layout, PlotData } from "plotly.js";
-import Plotly from "plotly.js-dist-min";
+import Plotly, { Config, Layout, PlotData } from "plotly.js-dist-min";
 import React, { useCallback, useEffect, useRef } from "react";
 
 export interface ChartData {

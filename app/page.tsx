@@ -1,15 +1,15 @@
 "use client";
 
 import { ChartData } from "@/components/chart";
-import { sleep } from "@/utils/utils";
-import { PlotData } from "plotly.js";
-import React, { useEffect, useState } from "react";
 import {
   accumulateYScore,
   makeTooltipText,
   makeUserSummary,
   retrieveUniqueACSubs,
-} from "../utils/dataProcessing";
+} from "@/utils/dataProcessing";
+import { sleep } from "@/utils/utils";
+import { PlotData } from "plotly.js-dist-min";
+import React, { useEffect, useState } from "react";
 
 import {
   API_WAIT_MSEC,
