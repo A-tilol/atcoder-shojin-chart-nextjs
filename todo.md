@@ -4,8 +4,8 @@
 - [ ] ユーザー名のマスク
 - [x] なぜかplotly.js-dist-minとplotly.jsがあるけどどちらかでいいのでは->minだけでよい
 - [ ] 色調整
-- [ ] README
-- [ ] プログレスバー
+- [x] README
+- [ ] プログレスバーねこ
 - [ ] チャート表示後に共有エリアを表示
 - [x] 共有コンポーネント整理
 - [x] Google Analytics
