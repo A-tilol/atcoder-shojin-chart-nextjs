@@ -1,4 +1,5 @@
 import { UserSummary } from "@/app/page";
+import { METRICS } from "@/config/constants";
 import { getUserSubmissions } from "./api";
 
 export const retrieveUniqueACSubs = async (
@@ -52,9 +53,9 @@ export const accumulateYScore = (
   }
 
   for (const sub of subs) {
-    if (kind === "獲得スコア") {
+    if (kind === METRICS.SCORES) {
       dateToScore[sub.date] += sub.point;
-    } else if (kind === "AC数") {
+    } else if (kind === METRICS.ACS) {
       dateToScore[sub.date] += 1;
     }
   }

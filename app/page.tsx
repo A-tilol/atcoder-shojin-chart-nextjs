@@ -17,6 +17,7 @@ import {
   CHEERING_WORDS1,
   CHEERING_WORDS2,
   CHEERING_WORDS3,
+  METRICS,
   TWEET_TEXT_TEMPLATE,
 } from "@/config/constants";
 import dynamic from "next/dynamic";
@@ -172,20 +173,20 @@ const TweetArea: React.FC<TweetAreaProps> = ({ userSummary, onCopyClick }) => {
 
   return (
     <>
-      <div className="flex justify-center gray-800">
-        「Copy To Clipboard」を押したあと、「Tweet」を押してこぴぺしてください！
-      </div>
-      <div className="flex justify-center mt-2">
+      <div className="mt-20 flex justify-center gray-800 text-2xl">Share</div>
+
+      <div className="flex justify-center mt-5">
         <textarea
           id="message"
           className="block p-2.5 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
-          style={{ width: "520px" }}
+          style={{ width: "420px" }}
           rows={5}
           value={tweetText}
           readOnly={true}
         ></textarea>
       </div>
-      <div className="flex justify-center">
+
+      <div className="mt-2 flex justify-center">
         <button
           className="mt-2 font-medium text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
           onClick={handleCopyClick}
@@ -207,6 +208,12 @@ const TweetArea: React.FC<TweetAreaProps> = ({ userSummary, onCopyClick }) => {
           </div>
         </a>
       </div>
+
+      <div className="mt-3 flex justify-center gray-800">
+        「Copy To Clipboard」を押したあと、「Tweet」を押してこぴぺしてください！
+      </div>
+
+      <div className="mt-20">{/* footer */}</div>
     </>
   );
 };
@@ -222,6 +229,7 @@ export interface UserSummary {
 const Content = () => {
   let [userID, setUserID] = useState("");
   let [rivalIDs, setRivalIDs] = useState("");
+  let [users, setUsers] = useState([""]);
   let [period, setPeriod] = useState(90);
   let [chartData, setChartData] = useState<ChartData>({
     data: [],
@@ -237,7 +245,7 @@ const Content = () => {
   });
   let [chartBlob, setChartBlob] = useState(new Blob());
 
-  const metrics = "獲得スコア";
+  const metrics = METRICS.SCORES;
 
   const handleInputChange = (id: string, value: string) => {
     console.log(id, value);
@@ -258,6 +266,7 @@ const Content = () => {
       .map((u) => u.trim())
       .filter((u) => u !== "");
     const users = [userID, ...rivals];
+    setUsers(users);
     console.log(users);
 
     fetchChartData(users);
@@ -340,18 +349,19 @@ const Content = () => {
           </button>
         </div>
 
-        <div className="w-full mt-10">
+        <div className="w-full mt-10" style={{ maxWidth: "1200px" }}>
           <DynamicChart
+            users={users}
             chartData={chartData}
             onChartChange={handleChartChange}
           />
-        </div>
 
-        <div className="mt-10">
-          <TweetArea
-            userSummary={userSummary}
-            onCopyClick={handleCopyToClipboard}
-          />
+          <div className="mt-10">
+            <TweetArea
+              userSummary={userSummary}
+              onCopyClick={handleCopyToClipboard}
+            />
+          </div>
         </div>
       </div>
     </>

@@ -1,7 +1,7 @@
 # TODO
 
 - [ ] メトリクス切り替え(Score, AC, Rating)
-- [ ] ユーザー名のマスク
+- [x] ユーザー名のマスク
 - [x] なぜかplotly.js-dist-minとplotly.jsがあるけどどちらかでいいのでは->minだけでよい
 - [ ] 色調整
 - [x] README
@@ -12,3 +12,4 @@
 - [x] meta tag
 - [ ] ogp, twitter card
 - [ ] フィードバック先の追加
+- [ ] footer

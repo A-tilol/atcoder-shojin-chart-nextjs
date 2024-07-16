@@ -3,6 +3,12 @@ export const SUB_API_URL =
 export const MAX_SUB = 500;
 export const API_WAIT_MSEC = 1000;
 
+export const METRICS = {
+  SCORES: "Scores",
+  ACS: "ACs",
+  RATINGS: "Ratings",
+};
+
 export const CHEERING_WORDS0 = [
   "きゅうけい",
   "ちょーかいふく",
