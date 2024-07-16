@@ -232,9 +232,9 @@ const Content = () => {
   let [users, setUsers] = useState([""]);
   let [period, setPeriod] = useState(90);
   let [chartData, setChartData] = useState<ChartData>({
-    data: [],
+    scoreData: [],
+    acData: [],
     period: 0,
-    metrics: "",
   });
   let [userSummary, setUserSummary] = useState<UserSummary>({
     userID: "",
@@ -245,10 +245,7 @@ const Content = () => {
   });
   let [chartBlob, setChartBlob] = useState(new Blob());
 
-  const metrics = METRICS.SCORES;
-
   const handleInputChange = (id: string, value: string) => {
-    console.log(id, value);
     if (id == "user-id-input") {
       setUserID(value);
     } else if (id == "rival-ids-input") {
@@ -267,7 +264,6 @@ const Content = () => {
       .filter((u) => u !== "");
     const users = [userID, ...rivals];
     setUsers(users);
-    console.log(users);
 
     fetchChartData(users);
   };
@@ -278,23 +274,33 @@ const Content = () => {
       return date.toISOString().split("T")[0];
     });
 
-    const usersData: Partial<PlotData>[] = [];
+    const scoreData: Partial<PlotData>[] = [];
+    const acData: Partial<PlotData>[] = [];
     for (const [i, user] of users.entries()) {
       if (i > 0) {
         await sleep(API_WAIT_MSEC);
       }
       const subs = await retrieveUniqueACSubs(user, period);
 
-      const data: Partial<PlotData> = {
+      const tooltipText = makeTooltipText(dates, subs);
+      scoreData.push({
         type: "scatter",
         mode: "lines",
         name: user,
         x: dates,
-        y: accumulateYScore(subs, period, metrics),
-        text: makeTooltipText(dates, subs),
+        y: accumulateYScore(subs, period, METRICS.SCORES),
+        text: tooltipText,
         hovertemplate: "%{text}",
-      };
-      usersData.push(data);
+      });
+      acData.push({
+        type: "scatter",
+        mode: "lines",
+        name: user,
+        x: dates,
+        y: accumulateYScore(subs, period, METRICS.ACS),
+        text: tooltipText,
+        hovertemplate: "%{text}",
+      });
 
       if (i === 0) {
         setUserSummary(makeUserSummary(user, dates[dates.length - 1], subs));
@@ -302,16 +308,14 @@ const Content = () => {
     }
 
     const chartData: ChartData = {
-      data: usersData,
+      scoreData: scoreData,
+      acData: acData,
       period: period,
-      metrics: metrics,
     };
-    console.log(chartData);
     setChartData(chartData);
   };
 
   const handleChartChange = (chartBlob_: Blob) => {
-    console.log(chartBlob_);
     setChartBlob(chartBlob_);
   };
 

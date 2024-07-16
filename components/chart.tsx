@@ -5,9 +5,9 @@ import Plotly, { Config, Layout, PlotData } from "plotly.js-dist-min";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 
 export interface ChartData {
-  data: Partial<PlotData>[];
+  scoreData: Partial<PlotData>[];
+  acData: Partial<PlotData>[];
   period: number;
-  metrics: string;
 }
 
 interface ChartProps {
@@ -34,7 +34,6 @@ const Chart: React.FC<ChartProps> = ({ users, chartData, onChartChange }) => {
     const response = await fetch(imageData);
     const blob = await response.blob();
 
-    console.log(blob);
     onChartChange(blob);
   }, [onChartChange]);
 
@@ -43,7 +42,16 @@ const Chart: React.FC<ChartProps> = ({ users, chartData, onChartChange }) => {
       return;
     }
 
-    for (const [i, d] of chartData.data.entries()) {
+    // select metrics data
+    let data: Partial<PlotData>[] = [];
+    if (metrics === METRICS.SCORES) {
+      data = chartData.scoreData;
+    } else if (metrics === METRICS.ACS) {
+      data = chartData.acData;
+    }
+
+    // Mask rival ids
+    for (const [i, d] of data.entries()) {
       if (i === 0) continue;
       if (maskRivalIDs) {
         d.name = `Rival ${i}`;
@@ -51,8 +59,6 @@ const Chart: React.FC<ChartProps> = ({ users, chartData, onChartChange }) => {
         d.name = users[i];
       }
     }
-    console.log(users);
-    console.log(chartData);
 
     const layout: Partial<Layout> = {
       title: "Shojin Chart",
@@ -72,7 +78,7 @@ const Chart: React.FC<ChartProps> = ({ users, chartData, onChartChange }) => {
         },
       },
       yaxis: {
-        title: chartData.metrics,
+        title: metrics,
       },
       margin: {
         t: 60,
@@ -87,10 +93,10 @@ const Chart: React.FC<ChartProps> = ({ users, chartData, onChartChange }) => {
       displayModeBar: false,
     };
 
-    Plotly.newPlot(chartRef.current, chartData.data, layout, config);
+    Plotly.newPlot(chartRef.current, data, layout, config);
 
     handleChartChange();
-  }, [chartData, maskRivalIDs]);
+  }, [chartData, metrics, maskRivalIDs]);
 
   const handleMetricsChange = (e: any) => {
     setMetrics(e.target.value);
@@ -152,7 +158,7 @@ const Chart: React.FC<ChartProps> = ({ users, chartData, onChartChange }) => {
                 </label>
               </div>
             </li>
-            <li className="w-full">
+            {/* <li className="w-full">
               <div className="flex items-center ps-3">
                 <input
                   id="metrics-radio-ratings"
@@ -170,7 +176,7 @@ const Chart: React.FC<ChartProps> = ({ users, chartData, onChartChange }) => {
                   Ratings
                 </label>
               </div>
-            </li>
+            </li> */}
           </ul>
 
           <div className="ml-6 w-40 flex items-center ps-4 border border-gray-200 rounded h-12">

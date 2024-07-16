@@ -5,11 +5,10 @@ export const getUserSubmissions = async (
   user: string,
   epoch: number
 ): Promise<any[]> => {
-  const response = await fetch(
-    `${SUB_API_URL}?user=${user}&from_second=${epoch}`
-  );
+  const url = `${SUB_API_URL}?user=${user}&from_second=${epoch}`;
+  const response = await fetch(url);
   const subs = await response.json();
-  console.log("API called", subs);
+  console.log(subs.length, "subs.", url);
 
   if (subs.length < MAX_SUB) {
     return subs;

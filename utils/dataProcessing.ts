@@ -107,7 +107,6 @@ export const makeUserSummary = (
   today: string,
   subs: any[]
 ): UserSummary => {
-  console.log(userID, today, subs);
   const todaySubs = subs.filter((sub) => {
     return sub.date === today;
   });
@@ -129,7 +128,6 @@ export const makeUserSummary = (
         .pop()}`;
     }
   }
-  console.log(userSummary);
 
   return userSummary;
 };
