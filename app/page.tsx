@@ -126,10 +126,6 @@ const TweetArea: React.FC<TweetAreaProps> = ({ userSummary, onCopyClick }) => {
   let [tweetText, setTweetText] = useState("");
 
   useEffect(() => {
-    if (userSummary.userID === "") {
-      return;
-    }
-
     const chooseCheeringWord = () => {
       const getElementAtRandom = (arr: string[]) => {
         return arr[Math.floor(Math.random() * arr.length)];
@@ -166,10 +162,6 @@ const TweetArea: React.FC<TweetAreaProps> = ({ userSummary, onCopyClick }) => {
   const handleCopyClick = () => {
     onCopyClick(tweetText);
   };
-
-  if (userSummary.userID === "") {
-    return <></>;
-  }
 
   return (
     <>
@@ -244,6 +236,7 @@ const Content = () => {
     maxPointPlobrem: "",
   });
   let [chartBlob, setChartBlob] = useState(new Blob());
+  let [isChartDrawn, setIsChartDrawn] = useState(false);
 
   const handleInputChange = (id: string, value: string) => {
     if (id == "user-id-input") {
@@ -317,6 +310,7 @@ const Content = () => {
 
   const handleChartChange = (chartBlob_: Blob) => {
     setChartBlob(chartBlob_);
+    setIsChartDrawn(true);
   };
 
   const handleCopyToClipboard = (tweetText: string) => {
@@ -361,10 +355,12 @@ const Content = () => {
           />
 
           <div className="mt-10">
-            <TweetArea
-              userSummary={userSummary}
-              onCopyClick={handleCopyToClipboard}
-            />
+            {isChartDrawn && (
+              <TweetArea
+                userSummary={userSummary}
+                onCopyClick={handleCopyToClipboard}
+              />
+            )}
           </div>
         </div>
       </div>

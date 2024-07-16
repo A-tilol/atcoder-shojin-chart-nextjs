@@ -29,7 +29,7 @@ export const CHEERING_WORDS1 = [
 export const CHEERING_WORDS2 = ["とうとい"];
 export const CHEERING_WORDS3 = ["ひれふしちゃう"];
 
-export const TWEET_TEXT_TEMPLATE = `今日の{USER_ID}さんの精進は{SHOJIN}🐾 {CHEERING_WORD}にゃ！
+export const TWEET_TEXT_TEMPLATE = `{USER_ID}さんの今日の精進は{SHOJIN}🐾 {CHEERING_WORD}にゃ！
 
 ACした最も難しい問題は {PLOBLEM} {MAX_POINTS}Pts！
 https://atilol.atcoder-shojin-shart-nextjs.github.io
