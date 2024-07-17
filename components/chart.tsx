@@ -54,7 +54,7 @@ const Chart: React.FC<ChartProps> = ({ users, chartData, onChartChange }) => {
     for (const [i, d] of data.entries()) {
       if (i === 0) continue;
       if (maskRivalIDs) {
-        d.name = `Rival ${i}`;
+        d.name = `rival_${i}`;
       } else {
         d.name = users[i];
       }
@@ -119,7 +119,7 @@ const Chart: React.FC<ChartProps> = ({ users, chartData, onChartChange }) => {
           Chart Options
         </div>
         <div className="mt-5 flex justify-center gray-800">
-          <ul className="items-center w-96 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg sm:flex">
+          <ul className="items-center w-64 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg sm:flex">
             <li className="w-full border-b border-gray-200 sm:border-b-0 sm:border-r">
               <div className="flex items-center ps-3">
                 <input
