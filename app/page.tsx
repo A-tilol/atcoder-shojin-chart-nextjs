@@ -329,44 +329,46 @@ const Content = () => {
 
   return (
     <>
-      <div className="m-5 flex flex-col min-h-screen flex-grow">
-        <TitleHeader />
+      <div className="flex flex-col min-h-screen">
+        <div className="flex-grow m-5">
+          <TitleHeader />
 
-        <InputFields
-          userID={userID}
-          rivalIDs={rivalIDs}
-          period={period}
-          onInputChange={handleInputChange}
-        />
-
-        <div>
-          <button
-            className="text-white bg-gradient-to-r from-cyan-400 via-cyan-500 to-cyan-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
-            onClick={handleDrawChartClick}
-          >
-            Draw Chart
-          </button>
-        </div>
-
-        <div className="w-full mt-10" style={{ maxWidth: "1200px" }}>
-          <DynamicChart
-            users={users}
-            chartData={chartData}
-            onChartChange={handleChartChange}
+          <InputFields
+            userID={userID}
+            rivalIDs={rivalIDs}
+            period={period}
+            onInputChange={handleInputChange}
           />
 
-          <div className="mt-10">
-            {isChartDrawn && (
-              <TweetArea
-                userSummary={userSummary}
-                onCopyClick={handleCopyToClipboard}
-              />
-            )}
+          <div>
+            <button
+              className="text-white bg-gradient-to-r from-cyan-400 via-cyan-500 to-cyan-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+              onClick={handleDrawChartClick}
+            >
+              Draw Chart
+            </button>
+          </div>
+
+          <div className="w-full mt-10" style={{ maxWidth: "1200px" }}>
+            <DynamicChart
+              users={users}
+              chartData={chartData}
+              onChartChange={handleChartChange}
+            />
+
+            <div className="mt-10">
+              {isChartDrawn && (
+                <TweetArea
+                  userSummary={userSummary}
+                  onCopyClick={handleCopyToClipboard}
+                />
+              )}
+            </div>
           </div>
         </div>
-      </div>
 
-      <Footer />
+        <Footer />
+      </div>
     </>
   );
 };

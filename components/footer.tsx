@@ -1,5 +1,6 @@
 import { GITHUB_URL, TWITTER_URL } from "@/config/constants";
 import { FaXTwitter } from "react-icons/fa6";
+import { IoLogoOctocat } from "react-icons/io";
 
 export const Footer = () => {
   return (
@@ -12,8 +13,11 @@ export const Footer = () => {
 
           <ul className="flex flex-wrap items-center mt-3 text-sm font-medium text-gray-500 sm:mt-0">
             <li>
-              <a href={GITHUB_URL} className="hover:underline me-4 md:me-6">
-                Github
+              <a
+                href={GITHUB_URL}
+                className="hover:underline me-4 md:me-6 flex items-center"
+              >
+                <IoLogoOctocat className="mr-1" /> Github
               </a>
             </li>
             <li>
