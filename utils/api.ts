@@ -8,7 +8,7 @@ export const getUserSubmissions = async (
   const url = `${SUB_API_URL}?user=${user}&from_second=${epoch}`;
   const response = await fetch(url);
   const subs = await response.json();
-  console.log(subs.length, "subs.", url, subs);
+  console.log(subs.length, "subs.", url);
 
   if (subs.length < MAX_SUB) {
     return subs;

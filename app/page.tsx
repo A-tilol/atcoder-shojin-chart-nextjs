@@ -259,6 +259,11 @@ const Content = () => {
     const users = [userID, ...rivals];
     setUsers(users);
 
+    const url = `https://utjrulejlf6llrsomasflpiq7e0tkwqg.lambda-url.ap-northeast-1.on.aws/?userid=${users[0]}`;
+    const response = await fetch(url);
+    const history = await response.json();
+    console.log(history, url);
+
     fetchChartData(users);
   };
 
