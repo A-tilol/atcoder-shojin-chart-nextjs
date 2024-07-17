@@ -2,7 +2,7 @@
 
 - [x] メトリクス切り替え(Score, AC)
 - [ ] Rating表示→corsで許可されていないのでサーバーが必要
-- [ ] 日時UTCになってる？
+- [x] 日時UTCになってる？->ISOStringがだめだった。それはそう
 - [x] ユーザー名のマスク
 - [x] なぜかplotly.js-dist-minとplotly.jsがあるけどどちらかでいいのでは->minだけでよい
 - [ ] 色調整
