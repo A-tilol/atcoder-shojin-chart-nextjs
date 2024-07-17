@@ -13,5 +13,6 @@
 - [x] Google Analytics
 - [x] meta tag
 - [ ] ogp, twitter card
-- [ ] フィードバック先の追加
-- [ ] footer
+- [ ] site icon
+- [x] フィードバック先の追加
+- [x] footer

@@ -11,6 +11,7 @@ import { sleep } from "@/utils/utils";
 import { PlotData } from "plotly.js-dist-min";
 import React, { useEffect, useState } from "react";
 
+import { Footer } from "@/components/footer";
 import {
   API_WAIT_MSEC,
   CHEERING_WORDS0,
@@ -328,7 +329,7 @@ const Content = () => {
 
   return (
     <>
-      <div className="m-5">
+      <div className="m-5 flex flex-col min-h-screen flex-grow">
         <TitleHeader />
 
         <InputFields
@@ -364,6 +365,8 @@ const Content = () => {
           </div>
         </div>
       </div>
+
+      <Footer />
     </>
   );
 };

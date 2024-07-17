@@ -34,3 +34,7 @@ export const TWEET_TEXT_TEMPLATE = `{USER_ID}さんの今日の精進は{SHOJIN}
 ACした最も難しい問題は {PLOBLEM} {MAX_POINTS}Pts！
 https://atilol.atcoder-shojin-shart-nextjs.github.io
 #AtCoder #AtCoder_Shojin_Chart`;
+
+export const GITHUB_URL =
+  "https://github.com/A-tilol/atcoder-shojin-chart-nextjs";
+export const TWITTER_URL = "https://x.com/xxatilol";
