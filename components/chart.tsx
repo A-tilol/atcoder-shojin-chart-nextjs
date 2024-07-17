@@ -7,6 +7,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 export interface ChartData {
   scoreData: Partial<PlotData>[];
   acData: Partial<PlotData>[];
+  ratingData: Partial<PlotData>[];
   period: number;
 }
 
@@ -48,6 +49,8 @@ const Chart: React.FC<ChartProps> = ({ users, chartData, onChartChange }) => {
       data = chartData.scoreData;
     } else if (metrics === METRICS.ACS) {
       data = chartData.acData;
+    } else if (metrics === METRICS.RATINGS) {
+      data = chartData.ratingData;
     }
 
     // Mask rival ids
@@ -60,6 +63,11 @@ const Chart: React.FC<ChartProps> = ({ users, chartData, onChartChange }) => {
       }
     }
 
+    let dtick = "M1";
+    if (chartData.period >= 700 || metrics === METRICS.RATINGS) {
+      dtick = "M6";
+    }
+
     const layout: Partial<Layout> = {
       title: "Shojin Chart",
       legend: {
@@ -70,7 +78,12 @@ const Chart: React.FC<ChartProps> = ({ users, chartData, onChartChange }) => {
       },
       font: { family: "Courier New, monospace", size: 18 },
       xaxis: {
-        dtick: chartData.period < 700 ? "M1" : "M6",
+        dtick: (() => {
+          let dtick = "M1";
+          if (chartData.period >= 700 || metrics === METRICS.RATINGS)
+            dtick = "M6";
+          return dtick;
+        })(),
         tickformat: "%Y-%m",
         tickangle: -45,
         tickfont: {
@@ -82,7 +95,7 @@ const Chart: React.FC<ChartProps> = ({ users, chartData, onChartChange }) => {
       },
       margin: {
         t: 60,
-        l: 60,
+        l: 70,
         r: 50,
       },
       autosize: true,
@@ -119,7 +132,7 @@ const Chart: React.FC<ChartProps> = ({ users, chartData, onChartChange }) => {
           Chart Options
         </div>
         <div className="mt-5 flex justify-center gray-800">
-          <ul className="items-center w-64 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg sm:flex">
+          <ul className="items-center w-72 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg sm:flex">
             <li className="w-full border-b border-gray-200 sm:border-b-0 sm:border-r">
               <div className="flex items-center ps-3">
                 <input
@@ -158,7 +171,7 @@ const Chart: React.FC<ChartProps> = ({ users, chartData, onChartChange }) => {
                 </label>
               </div>
             </li>
-            {/* <li className="w-full">
+            <li className="w-full">
               <div className="flex items-center ps-3">
                 <input
                   id="metrics-radio-ratings"
@@ -176,7 +189,7 @@ const Chart: React.FC<ChartProps> = ({ users, chartData, onChartChange }) => {
                   Ratings
                 </label>
               </div>
-            </li> */}
+            </li>
           </ul>
 
           <div className="ml-6 w-40 flex items-center ps-4 border border-gray-200 rounded h-12">

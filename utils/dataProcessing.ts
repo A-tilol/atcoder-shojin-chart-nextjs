@@ -1,6 +1,7 @@
 import { UserSummary } from "@/app/page";
 import { METRICS } from "@/config/constants";
-import { getUserSubmissions } from "./api";
+import { PlotData } from "plotly.js-dist-min";
+import { getUserHistory, getUserSubmissions, UserHistory } from "./api";
 
 export const retrieveUniqueACSubs = async (
   user: string,
@@ -136,4 +137,30 @@ export const makeUserSummary = (
   }
 
   return userSummary;
+};
+
+export const fetchRatingData = async (
+  users: string[]
+): Promise<Partial<PlotData>[]> => {
+  const ratingData: Partial<PlotData>[] = [];
+  for (const user of users) {
+    const history = await (
+      await getUserHistory(user)
+    ).filter((h: UserHistory) => h.IsRated);
+
+    ratingData.push({
+      type: "scatter",
+      mode: "lines",
+      name: user,
+      x: history.map((h: UserHistory): string => {
+        return h.EndTime.split("T")[0];
+      }),
+      y: history.map((h: UserHistory): number => {
+        return h.NewRating;
+      }),
+      // text: tooltipText,
+      // hovertemplate: "%{text}",
+    });
+  }
+  return ratingData;
 };

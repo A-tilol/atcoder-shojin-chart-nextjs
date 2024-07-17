@@ -3,6 +3,7 @@
 import { ChartData } from "@/components/chart";
 import {
   accumulateYScore,
+  fetchRatingData,
   makeTooltipText,
   makeUserSummary,
   retrieveUniqueACSubs,
@@ -173,7 +174,7 @@ const TweetArea: React.FC<TweetAreaProps> = ({ userSummary, onCopyClick }) => {
           id="message"
           className="block p-2.5 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
           style={{ width: "420px" }}
-          rows={5}
+          rows={6}
           value={tweetText}
           readOnly={true}
         ></textarea>
@@ -227,6 +228,7 @@ const Content = () => {
   let [chartData, setChartData] = useState<ChartData>({
     scoreData: [],
     acData: [],
+    ratingData: [],
     period: 0,
   });
   let [userSummary, setUserSummary] = useState<UserSummary>({
@@ -258,11 +260,6 @@ const Content = () => {
       .filter((u) => u !== "");
     const users = [userID, ...rivals];
     setUsers(users);
-
-    const url = `https://utjrulejlf6llrsomasflpiq7e0tkwqg.lambda-url.ap-northeast-1.on.aws/?userid=${users[0]}`;
-    const response = await fetch(url);
-    const history = await response.json();
-    console.log(history, url);
 
     fetchChartData(users);
   };
@@ -306,9 +303,12 @@ const Content = () => {
       }
     }
 
+    const ratingData = await fetchRatingData(users);
+
     const chartData: ChartData = {
       scoreData: scoreData,
       acData: acData,
+      ratingData: ratingData,
       period: period,
     };
     setChartData(chartData);
