@@ -252,8 +252,6 @@ const Content = () => {
     rivals = rivals.slice(0, Math.min(rivals.length, MAX_RIVAL));
     const users_ = [userID.trim(), ...rivals];
 
-    if (JSON.stringify(users) === JSON.stringify(users_)) return;
-
     setUsers(users_);
     fetchChartData(users_);
   };
