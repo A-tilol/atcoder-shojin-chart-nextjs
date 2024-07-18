@@ -250,7 +250,7 @@ const Content = () => {
       .map((u) => u.trim())
       .filter((u) => u !== "");
     rivals = rivals.slice(0, Math.min(rivals.length, MAX_RIVAL));
-    const users_ = [userID, ...rivals];
+    const users_ = [userID.trim(), ...rivals];
 
     if (JSON.stringify(users) === JSON.stringify(users_)) return;
 
