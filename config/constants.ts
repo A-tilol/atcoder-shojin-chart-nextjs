@@ -22,7 +22,7 @@ export const CHART = {
   MARKER_SYMBOL: "circle-open",
 };
 
-export const RATE_BORDER = {
+export const RATE_BORDER: { [key: string]: number } = {
   RED: 2800,
   ORANGE: 2400,
   YELLOW: 2000,
@@ -33,7 +33,7 @@ export const RATE_BORDER = {
   GRAY: 0,
 };
 
-export const RATE_COLOR = {
+export const RATE_COLOR: { [key: string]: string } = {
   RED: "#FF0000",
   ORANGE: "#FF8000",
   YELLOW: "#C0C000",

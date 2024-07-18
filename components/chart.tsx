@@ -1,6 +1,7 @@
 "use client";
 
-import { METRICS } from "@/config/constants";
+import { METRICS, RATE_BORDER, RATE_COLOR } from "@/config/constants";
+import { colorCodeToRGBA } from "@/utils/utils";
 import Plotly, { Config, Layout, PlotData } from "plotly.js-dist-min";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 
@@ -96,6 +97,49 @@ const Chart: React.FC<ChartProps> = ({ users, chartData, onChartChange }) => {
       autosize: true,
       dragmode: false,
     };
+
+    // Background Color for Rating
+    if (metrics === METRICS.RATINGS) {
+      const [lowerLim, upperLim] = (() => {
+        let minRate = 10 ** 4;
+        let maxRate = 0;
+        for (const d of data) {
+          minRate = Math.min(minRate, Math.min(...(d.y as number[])));
+          maxRate = Math.max(maxRate, Math.max(...(d.y as number[])));
+        }
+        const lowerLim = Math.max(0, Math.floor(minRate / 100) * 100 - 100);
+        const upperLim = Math.ceil(maxRate / 100) * 100 + 230;
+        return [lowerLim, upperLim];
+      })();
+
+      layout.shapes = Object.keys(RATE_COLOR)
+        .filter((rc: string) => {
+          const border = RATE_BORDER[rc];
+          if (border + 400 <= lowerLim || border > upperLim) {
+            return false;
+          }
+          return true;
+        })
+        .map((rc: string) => {
+          return {
+            type: "rect",
+            xref: "paper",
+            yref: "y",
+            x0: 0,
+            y0: Math.max(RATE_BORDER[rc], lowerLim),
+            x1: 1,
+            y1:
+              rc === "RED"
+                ? upperLim
+                : Math.min(RATE_BORDER[rc] + 400, upperLim),
+            fillcolor: colorCodeToRGBA(RATE_COLOR[rc], 0.2),
+            line: {
+              width: 0,
+            },
+            layer: "below",
+          };
+        });
+    }
 
     const config: Partial<Config> = {
       displayModeBar: false,

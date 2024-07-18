@@ -257,7 +257,7 @@ export const fetchRatingData = async (
       text: makeTooltipTextForRatings(history),
       hovertemplate: "%{text}",
       marker: {
-        symbol: CHART.MARKER_SYMBOL,
+        // symbol: CHART.MARKER_SYMBOL,
         color: makeMarkerColors(history),
         size: 6,
       },
