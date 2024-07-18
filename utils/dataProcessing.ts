@@ -1,5 +1,5 @@
 import { UserSummary } from "@/app/page";
-import { API_WAIT_MSEC, METRICS } from "@/config/constants";
+import { API_WAIT_MSEC, CHART } from "@/config/constants";
 import { PlotData } from "plotly.js-dist-min";
 import { getUserHistory, getUserSubmissions, UserHistory } from "./api";
 import { sleep } from "./utils";
@@ -42,41 +42,58 @@ export const retrieveUniqueACSubs = async (
 
 export const accumulateYScore = (
   subs: any[],
-  period: number,
-  kind: string
-): number[] => {
+  period: number
+): [string[], number[], number[]] => {
   const formatDate = (date: Date): string => {
     const month = String(date.getMonth() + 1).padStart(2, "0");
     const day = String(date.getDate()).padStart(2, "0");
     return `${date.getFullYear()}-${month}-${day}`;
   };
 
-  const dateToScore: { [key: string]: number } = {};
-  const today = new Date();
-  for (let i = 0; i <= period; i++) {
-    const date = formatDate(
-      new Date(today.getTime() - i * 24 * 60 * 60 * 1000)
+  const accumulate = (dateToScore: { [key: string]: number }): number[] => {
+    const sortedEntries = Object.entries(dateToScore).sort(
+      ([dateA], [dateB]) => {
+        return new Date(dateA).getTime() - new Date(dateB).getTime();
+      }
     );
-    dateToScore[date] = 0;
-  }
+    const pointsCum = sortedEntries.map(([, score]) => score);
+    for (let i = 1; i < pointsCum.length; i++) {
+      pointsCum[i] += pointsCum[i - 1];
+    }
+    return pointsCum;
+  };
+
+  const dateToScore: { [key: string]: number } = {};
+  const dateToAc: { [key: string]: number } = {};
+  const startDate = formatDate(
+    new Date(new Date().getTime() - period * 24 * 60 * 60 * 1000)
+  );
+  dateToScore[startDate] = 0;
+  dateToAc[startDate] = 0;
 
   for (const sub of subs) {
-    if (kind === METRICS.SCORES) {
-      dateToScore[sub.date] += sub.point;
-    } else if (kind === METRICS.ACS) {
-      dateToScore[sub.date] += 1;
+    if (!(sub.date in dateToScore)) {
+      dateToScore[sub.date] = 0;
+      dateToAc[sub.date] = 0;
     }
+    dateToScore[sub.date] += sub.point;
+    dateToAc[sub.date] += 1;
   }
 
-  const sortedEntries = Object.entries(dateToScore).sort(([dateA], [dateB]) => {
-    return new Date(dateA).getTime() - new Date(dateB).getTime();
-  });
-  const pointsCum = sortedEntries.map(([, score]) => score);
-  for (let i = 1; i < pointsCum.length; i++) {
-    pointsCum[i] += pointsCum[i - 1];
-  }
+  // const sortedEntries = Object.entries(dateToScore).sort(([dateA], [dateB]) => {
+  //   return new Date(dateA).getTime() - new Date(dateB).getTime();
+  // });
+  // const pointsCum = sortedEntries.map(([, score]) => score);
+  // for (let i = 1; i < pointsCum.length; i++) {
+  //   pointsCum[i] += pointsCum[i - 1];
+  // }
 
-  return pointsCum;
+  const sortedDate = Object.keys(dateToScore).sort();
+  console.log(sortedDate);
+  const scoreCum = accumulate(dateToAc);
+  const acCum = accumulate(dateToScore);
+
+  return [sortedDate, scoreCum, acCum];
 };
 
 export const makeTooltipText = (dates: string[], subs: any[]): string[] => {
@@ -144,11 +161,6 @@ export const fetchSubData = async (
   users: string[],
   period: number
 ): Promise<any[]> => {
-  const dates = Array.from({ length: period + 1 }, (_, i) => {
-    const date = new Date(Date.now() - (period - i) * 24 * 60 * 60 * 1000);
-    return date.toISOString().split("T")[0];
-  });
-
   let userSummary = null;
   const scoreData: Partial<PlotData>[] = [];
   const acData: Partial<PlotData>[] = [];
@@ -158,30 +170,29 @@ export const fetchSubData = async (
     }
     const subs = await retrieveUniqueACSubs(user, period);
 
+    const [dates, scores, ACs] = accumulateYScore(subs, period);
     const tooltipText = makeTooltipText(dates, subs);
+
     scoreData.push({
-      type: "scatter",
-      mode: "lines+markers",
+      type: CHART.TYPE,
+      mode: CHART.MODE,
       name: user,
       x: dates,
-      y: accumulateYScore(subs, period, METRICS.SCORES),
+      y: scores,
       text: tooltipText,
       hovertemplate: "%{text}",
-      marker: {
-        symbol: "circle-open",
-      },
+      marker: CHART.MARKER,
     });
+
     acData.push({
-      type: "scatter",
-      mode: "lines+markers",
+      type: CHART.TYPE,
+      mode: CHART.MODE,
       name: user,
       x: dates,
-      y: accumulateYScore(subs, period, METRICS.ACS),
+      y: ACs,
       text: tooltipText,
       hovertemplate: "%{text}",
-      marker: {
-        symbol: "circle-open",
-      },
+      marker: CHART.MARKER,
     });
 
     if (i === 0) {
@@ -202,8 +213,8 @@ export const fetchRatingData = async (
     ).filter((h: UserHistory) => h.IsRated);
 
     ratingData.push({
-      type: "scatter",
-      mode: "lines+markers",
+      type: CHART.TYPE,
+      mode: CHART.MODE,
       name: user,
       x: history.map((h: UserHistory): string => {
         return h.EndTime.split("T")[0];
@@ -213,9 +224,7 @@ export const fetchRatingData = async (
       }),
       // text: tooltipText,
       // hovertemplate: "%{text}",
-      marker: {
-        symbol: "circle-open",
-      },
+      marker: CHART.MARKER,
     });
   }
   return ratingData;

@@ -1,3 +1,5 @@
+import { PlotType } from "plotly.js-dist-min";
+
 export const SUB_API_URL =
   "https://kenkoooo.com/atcoder/atcoder-api/v3/user/submissions";
 export const MAX_SUB = 500;
@@ -12,6 +14,14 @@ export const METRICS = {
   SCORES: "Scores",
   ACS: "ACs",
   RATINGS: "Ratings",
+};
+
+export const CHART = {
+  TYPE: "scatter" as PlotType,
+  MODE: "lines+markers" as "lines+markers",
+  MARKER: {
+    symbol: "circle-open",
+  },
 };
 
 export const CHEERING_WORDS0 = [
