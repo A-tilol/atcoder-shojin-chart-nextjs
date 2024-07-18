@@ -86,8 +86,8 @@ export const accumulateYScore = (
   }
 
   const sortedDate = Object.keys(dateToScore).sort();
-  const scoreCum = accumulate(dateToAc);
-  const acCum = accumulate(dateToScore);
+  const scoreCum = accumulate(dateToScore);
+  const acCum = accumulate(dateToAc);
 
   return [sortedDate, scoreCum, acCum];
 };
