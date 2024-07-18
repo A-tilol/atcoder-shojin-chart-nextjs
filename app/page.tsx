@@ -1,26 +1,16 @@
 "use client";
 
 import { ChartData } from "@/components/chart";
-import {
-  accumulateYScore,
-  fetchRatingData,
-  makeTooltipText,
-  makeUserSummary,
-  retrieveUniqueACSubs,
-} from "@/utils/dataProcessing";
-import { sleep } from "@/utils/utils";
-import { PlotData } from "plotly.js-dist-min";
+import { fetchRatingData, fetchSubData } from "@/utils/dataProcessing";
 import React, { useEffect, useState } from "react";
 
 import { Footer } from "@/components/footer";
 import {
-  API_WAIT_MSEC,
   CHEERING_WORDS0,
   CHEERING_WORDS1,
   CHEERING_WORDS2,
   CHEERING_WORDS3,
   MAX_RIVAL,
-  METRICS,
   TWEET_TEXT_TEMPLATE,
 } from "@/config/constants";
 import dynamic from "next/dynamic";
@@ -102,7 +92,7 @@ const InputFields: React.FC<InputFieldsProps> = ({
           htmlFor="period-input"
           className="block mb-2 text-sm font-medium text-gray-900"
         >
-          Period (days)
+          Period [days]
         </label>
         <input
           type="number"
@@ -269,53 +259,17 @@ const Content = () => {
   };
 
   const fetchChartData = async (users: string[]) => {
-    const dates = Array.from({ length: period + 1 }, (_, i) => {
-      const date = new Date(Date.now() - (period - i) * 24 * 60 * 60 * 1000);
-      return date.toISOString().split("T")[0];
-    });
-
-    const scoreData: Partial<PlotData>[] = [];
-    const acData: Partial<PlotData>[] = [];
-    for (const [i, user] of users.entries()) {
-      if (i > 0) {
-        await sleep(API_WAIT_MSEC);
-      }
-      const subs = await retrieveUniqueACSubs(user, period);
-
-      const tooltipText = makeTooltipText(dates, subs);
-      scoreData.push({
-        type: "scatter",
-        mode: "lines",
-        name: user,
-        x: dates,
-        y: accumulateYScore(subs, period, METRICS.SCORES),
-        text: tooltipText,
-        hovertemplate: "%{text}",
-      });
-      acData.push({
-        type: "scatter",
-        mode: "lines",
-        name: user,
-        x: dates,
-        y: accumulateYScore(subs, period, METRICS.ACS),
-        text: tooltipText,
-        hovertemplate: "%{text}",
-      });
-
-      if (i === 0) {
-        setUserSummary(makeUserSummary(user, dates[dates.length - 1], subs));
-      }
-    }
-
+    const [userSummary, scoreData, acData] = await fetchSubData(users, period);
     const ratingData = await fetchRatingData(users);
-
     const chartData: ChartData = {
       scoreData: scoreData,
       acData: acData,
       ratingData: ratingData,
       period: period,
     };
+
     setChartData(chartData);
+    setUserSummary(userSummary);
   };
 
   const handleChartChange = (chartBlob_: Blob) => {

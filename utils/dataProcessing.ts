@@ -1,7 +1,8 @@
 import { UserSummary } from "@/app/page";
-import { METRICS } from "@/config/constants";
+import { API_WAIT_MSEC, METRICS } from "@/config/constants";
 import { PlotData } from "plotly.js-dist-min";
 import { getUserHistory, getUserSubmissions, UserHistory } from "./api";
+import { sleep } from "./utils";
 
 export const retrieveUniqueACSubs = async (
   user: string,
@@ -139,6 +140,58 @@ export const makeUserSummary = (
   return userSummary;
 };
 
+export const fetchSubData = async (
+  users: string[],
+  period: number
+): Promise<any[]> => {
+  const dates = Array.from({ length: period + 1 }, (_, i) => {
+    const date = new Date(Date.now() - (period - i) * 24 * 60 * 60 * 1000);
+    return date.toISOString().split("T")[0];
+  });
+
+  let userSummary = null;
+  const scoreData: Partial<PlotData>[] = [];
+  const acData: Partial<PlotData>[] = [];
+  for (const [i, user] of users.entries()) {
+    if (i > 0) {
+      await sleep(API_WAIT_MSEC);
+    }
+    const subs = await retrieveUniqueACSubs(user, period);
+
+    const tooltipText = makeTooltipText(dates, subs);
+    scoreData.push({
+      type: "scatter",
+      mode: "lines+markers",
+      name: user,
+      x: dates,
+      y: accumulateYScore(subs, period, METRICS.SCORES),
+      text: tooltipText,
+      hovertemplate: "%{text}",
+      marker: {
+        symbol: "circle-open",
+      },
+    });
+    acData.push({
+      type: "scatter",
+      mode: "lines+markers",
+      name: user,
+      x: dates,
+      y: accumulateYScore(subs, period, METRICS.ACS),
+      text: tooltipText,
+      hovertemplate: "%{text}",
+      marker: {
+        symbol: "circle-open",
+      },
+    });
+
+    if (i === 0) {
+      userSummary = makeUserSummary(user, dates[dates.length - 1], subs);
+    }
+  }
+
+  return [userSummary, scoreData, acData];
+};
+
 export const fetchRatingData = async (
   users: string[]
 ): Promise<Partial<PlotData>[]> => {
@@ -150,7 +203,7 @@ export const fetchRatingData = async (
 
     ratingData.push({
       type: "scatter",
-      mode: "lines",
+      mode: "lines+markers",
       name: user,
       x: history.map((h: UserHistory): string => {
         return h.EndTime.split("T")[0];
@@ -160,6 +213,9 @@ export const fetchRatingData = async (
       }),
       // text: tooltipText,
       // hovertemplate: "%{text}",
+      marker: {
+        symbol: "circle-open",
+      },
     });
   }
   return ratingData;

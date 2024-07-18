@@ -3,6 +3,9 @@
 - [x] メトリクス切り替え(Score, AC)
 - [x] Rating表示→corsで許可されていないのでサーバーが必要
 - [ ] rating gridに色付け
+- [ ] rating hover text
+- [ ] rival legend name -> 色coder
+- [ ] marker color
 - [x] ライバル数制限
 - [x] API制限
 - [x] 日時UTCになってる？->ISOStringがだめだった。それはそう

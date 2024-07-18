@@ -63,11 +63,6 @@ const Chart: React.FC<ChartProps> = ({ users, chartData, onChartChange }) => {
       }
     }
 
-    let dtick = "M1";
-    if (chartData.period >= 700 || metrics === METRICS.RATINGS) {
-      dtick = "M6";
-    }
-
     const layout: Partial<Layout> = {
       title: "Shojin Chart",
       legend: {
