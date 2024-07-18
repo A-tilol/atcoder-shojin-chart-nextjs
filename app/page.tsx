@@ -19,6 +19,7 @@ import {
   CHEERING_WORDS1,
   CHEERING_WORDS2,
   CHEERING_WORDS3,
+  MAX_RIVAL,
   METRICS,
   TWEET_TEXT_TEMPLATE,
 } from "@/config/constants";
@@ -254,14 +255,17 @@ const Content = () => {
   const handleDrawChartClick = async () => {
     if (userID === "") return;
 
-    const rivals = rivalIDs
-      .split(", ")
+    let rivals = rivalIDs
+      .split(",")
       .map((u) => u.trim())
       .filter((u) => u !== "");
-    const users = [userID, ...rivals];
-    setUsers(users);
+    rivals = rivals.slice(0, Math.min(rivals.length, MAX_RIVAL));
+    const users_ = [userID, ...rivals];
 
-    fetchChartData(users);
+    if (JSON.stringify(users) === JSON.stringify(users_)) return;
+
+    setUsers(users_);
+    fetchChartData(users_);
   };
 
   const fetchChartData = async (users: string[]) => {

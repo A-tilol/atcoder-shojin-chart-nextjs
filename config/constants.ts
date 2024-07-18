@@ -3,6 +3,8 @@ export const SUB_API_URL =
 export const MAX_SUB = 500;
 export const API_WAIT_MSEC = 1000;
 
+export const MAX_RIVAL = 10;
+
 export const USER_HISTORY_API_URL =
   "https://utjrulejlf6llrsomasflpiq7e0tkwqg.lambda-url.ap-northeast-1.on.aws";
 

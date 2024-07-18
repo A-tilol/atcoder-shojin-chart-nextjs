@@ -41,6 +41,6 @@ export const getUserHistory = async (user: string): Promise<UserHistory[]> => {
   const url = `${USER_HISTORY_API_URL}?userid=${user}`;
   const response = await fetch(url);
   const history = await response.json();
-  console.log(history, url);
+  // console.log(url);
   return history;
 };

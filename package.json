@@ -8,7 +8,7 @@
     "build": "next build  && touch out/.nojekyll",
     "start": "next start",
     "lint": "next lint",
-    "deploy": "gh-pages --dotfiles -d out"
+    "deploy": "next build  && touch out/.nojekyll && gh-pages --dotfiles -d out"
   },
   "dependencies": {
     "@next/third-parties": "^15.0.0-canary.67",

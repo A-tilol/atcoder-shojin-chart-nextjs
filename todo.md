@@ -1,7 +1,10 @@
 # TODO
 
 - [x] メトリクス切り替え(Score, AC)
-- [ ] Rating表示→corsで許可されていないのでサーバーが必要
+- [x] Rating表示→corsで許可されていないのでサーバーが必要
+- [ ] rating gridに色付け
+- [x] ライバル数制限
+- [x] API制限
 - [x] 日時UTCになってる？->ISOStringがだめだった。それはそう
 - [x] ユーザー名のマスク
 - [x] なぜかplotly.js-dist-minとplotly.jsがあるけどどちらかでいいのでは->minだけでよい
