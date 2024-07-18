@@ -80,16 +80,7 @@ export const accumulateYScore = (
     dateToAc[sub.date] += 1;
   }
 
-  // const sortedEntries = Object.entries(dateToScore).sort(([dateA], [dateB]) => {
-  //   return new Date(dateA).getTime() - new Date(dateB).getTime();
-  // });
-  // const pointsCum = sortedEntries.map(([, score]) => score);
-  // for (let i = 1; i < pointsCum.length; i++) {
-  //   pointsCum[i] += pointsCum[i - 1];
-  // }
-
   const sortedDate = Object.keys(dateToScore).sort();
-  console.log(sortedDate);
   const scoreCum = accumulate(dateToAc);
   const acCum = accumulate(dateToScore);
 
@@ -104,9 +95,6 @@ export const makeTooltipText = (dates: string[], subs: any[]): string[] => {
   }
 
   for (const sub of subs) {
-    if (!daySummary[sub.date]) {
-      daySummary[sub.date] = [];
-    }
     const problem = `${sub.contest_id} ${sub.problem_id.split("_").pop()} ${
       sub.point
     }`;
@@ -203,6 +191,19 @@ export const fetchSubData = async (
   return [userSummary, scoreData, acData];
 };
 
+export const makeTooltipTextForRatings = (history: UserHistory[]): string[] => {
+  const texts: string[] = [];
+  for (const h of history) {
+    const date = h.EndTime.split("T")[0];
+    const diff = Math.abs(h.NewRating - h.OldRating);
+    const sign = h.NewRating - h.OldRating >= 0 ? "+" : "-";
+    let text = `${date}<br>${h.ContestName}<br>${"- ".repeat(11)}<br>`;
+    text += `Rating ${h.NewRating}<br>Performance ${h.Performance}<br>Diff ${sign}${diff}`;
+    texts.push(text);
+  }
+  return texts;
+};
+
 export const fetchRatingData = async (
   users: string[]
 ): Promise<Partial<PlotData>[]> => {
@@ -222,8 +223,8 @@ export const fetchRatingData = async (
       y: history.map((h: UserHistory): number => {
         return h.NewRating;
       }),
-      // text: tooltipText,
-      // hovertemplate: "%{text}",
+      text: makeTooltipTextForRatings(history),
+      hovertemplate: "%{text}",
       marker: CHART.MARKER,
     });
   }
