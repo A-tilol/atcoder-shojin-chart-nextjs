@@ -5,7 +5,7 @@
 - [ ] rating gridに色付け
 - [x] rating hover text
 - [ ] rival legend name -> 色coder
-- [ ] marker color, size
+- [x] marker color, size
 - [x] ライバル数制限
 - [x] API制限
 - [x] 日時UTCになってる？->ISOStringがだめだった。それはそう

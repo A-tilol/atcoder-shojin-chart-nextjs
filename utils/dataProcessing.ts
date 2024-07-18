@@ -1,5 +1,10 @@
 import { UserSummary } from "@/app/page";
-import { API_WAIT_MSEC, CHART } from "@/config/constants";
+import {
+  API_WAIT_MSEC,
+  CHART,
+  RATE_BORDER,
+  RATE_COLOR,
+} from "@/config/constants";
 import { PlotData } from "plotly.js-dist-min";
 import { getUserHistory, getUserSubmissions, UserHistory } from "./api";
 import { sleep } from "./utils";
@@ -169,7 +174,9 @@ export const fetchSubData = async (
       y: scores,
       text: tooltipText,
       hovertemplate: "%{text}",
-      marker: CHART.MARKER,
+      marker: {
+        symbol: CHART.MARKER_SYMBOL,
+      },
     });
 
     acData.push({
@@ -180,7 +187,9 @@ export const fetchSubData = async (
       y: ACs,
       text: tooltipText,
       hovertemplate: "%{text}",
-      marker: CHART.MARKER,
+      marker: {
+        symbol: CHART.MARKER_SYMBOL,
+      },
     });
 
     if (i === 0) {
@@ -204,6 +213,28 @@ export const makeTooltipTextForRatings = (history: UserHistory[]): string[] => {
   return texts;
 };
 
+const makeMarkerColors = (history: UserHistory[]): string[] => {
+  return history.map((h: UserHistory) => {
+    if (h.Performance >= RATE_BORDER.RED) {
+      return RATE_COLOR.RED;
+    } else if (h.Performance >= RATE_BORDER.ORANGE) {
+      return RATE_COLOR.ORANGE;
+    } else if (h.Performance >= RATE_BORDER.YELLOW) {
+      return RATE_COLOR.YELLOW;
+    } else if (h.Performance >= RATE_BORDER.BLUE) {
+      return RATE_COLOR.BLUE;
+    } else if (h.Performance >= RATE_BORDER.LBLUE) {
+      return RATE_COLOR.LBLUE;
+    } else if (h.Performance >= RATE_BORDER.GREEN) {
+      return RATE_COLOR.GREEN;
+    } else if (h.Performance >= RATE_BORDER.BLOWN) {
+      return RATE_COLOR.BLOWN;
+    } else {
+      return RATE_COLOR.GRAY;
+    }
+  });
+};
+
 export const fetchRatingData = async (
   users: string[]
 ): Promise<Partial<PlotData>[]> => {
@@ -225,7 +256,11 @@ export const fetchRatingData = async (
       }),
       text: makeTooltipTextForRatings(history),
       hovertemplate: "%{text}",
-      marker: CHART.MARKER,
+      marker: {
+        symbol: CHART.MARKER_SYMBOL,
+        color: makeMarkerColors(history),
+        size: 6,
+      },
     });
   }
   return ratingData;

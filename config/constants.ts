@@ -19,9 +19,29 @@ export const METRICS = {
 export const CHART = {
   TYPE: "scatter" as PlotType,
   MODE: "lines+markers" as "lines+markers",
-  MARKER: {
-    symbol: "circle-open",
-  },
+  MARKER_SYMBOL: "circle-open",
+};
+
+export const RATE_BORDER = {
+  RED: 2800,
+  ORANGE: 2400,
+  YELLOW: 2000,
+  BLUE: 1600,
+  LBLUE: 1200,
+  GREEN: 800,
+  BLOWN: 400,
+  GRAY: 0,
+};
+
+export const RATE_COLOR = {
+  RED: "#FF0000",
+  ORANGE: "#FF8000",
+  YELLOW: "#C0C000",
+  BLUE: "#0000FF",
+  LBLUE: "#00C0C0",
+  GREEN: "#008000",
+  BLOWN: "#804000",
+  GRAY: "#808080",
 };
 
 export const CHEERING_WORDS0 = [
