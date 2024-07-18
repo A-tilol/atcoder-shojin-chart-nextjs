@@ -2,7 +2,7 @@
 
 - [x] メトリクス切り替え(Score, AC)
 - [x] Rating表示→corsで許可されていないのでサーバーが必要
-- [ ] rating gridに色付け
+- [x] rating gridに色付け
 - [x] rating hover text
 - [ ] rival legend name -> 色coder
 - [x] marker color, size

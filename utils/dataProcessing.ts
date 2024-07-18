@@ -206,7 +206,17 @@ export const makeTooltipTextForRatings = (history: UserHistory[]): string[] => {
     const date = h.EndTime.split("T")[0];
     const diff = Math.abs(h.NewRating - h.OldRating);
     const sign = h.NewRating - h.OldRating >= 0 ? "+" : "-";
-    let text = `${date}<br>${h.ContestName}<br>${"- ".repeat(11)}<br>`;
+    const contest = (() => {
+      const pattern = /[(（]AtCoder .* Contest \d+[)）]/;
+      const match = h.ContestName.match(pattern);
+      if (match) {
+        return match[0].slice(1, match.length - 2);
+      } else {
+        return h.ContestName;
+      }
+    })();
+
+    let text = `${date}<br>${contest}<br>${"- ".repeat(11)}<br>`;
     text += `Rating ${h.NewRating}<br>Performance ${h.Performance}<br>Diff ${sign}${diff}`;
     texts.push(text);
   }
