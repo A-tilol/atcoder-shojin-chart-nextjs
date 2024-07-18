@@ -74,12 +74,7 @@ const Chart: React.FC<ChartProps> = ({ users, chartData, onChartChange }) => {
       },
       font: { family: "Courier New, monospace", size: 18 },
       xaxis: {
-        dtick: (() => {
-          let dtick = "M1";
-          if (chartData.period >= 700 || metrics === METRICS.RATINGS)
-            dtick = "M6";
-          return dtick;
-        })(),
+        automargin: true,
         tickformat: "%Y-%m",
         tickangle: -45,
         tickfont: {
@@ -132,7 +127,7 @@ const Chart: React.FC<ChartProps> = ({ users, chartData, onChartChange }) => {
               rc === "RED"
                 ? upperLim
                 : Math.min(RATE_BORDER[rc] + 400, upperLim),
-            fillcolor: colorCodeToRGBA(RATE_COLOR[rc], 0.2),
+            fillcolor: colorCodeToRGBA(RATE_COLOR[rc], 0.3),
             line: {
               width: 0,
             },
