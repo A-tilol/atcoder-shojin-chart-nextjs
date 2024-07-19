@@ -16,6 +16,7 @@ import {
 import dynamic from "next/dynamic";
 import { FaXTwitter } from "react-icons/fa6";
 import { MdOutlineContentCopy } from "react-icons/md";
+import { RingLoader } from "react-spinners";
 
 const DynamicChart = dynamic(() => import("@/components/chart"), {
   ssr: false,
@@ -231,6 +232,7 @@ const Content = () => {
   });
   let [chartBlob, setChartBlob] = useState(new Blob());
   let [isChartDrawn, setIsChartDrawn] = useState(false);
+  let [loading, setLoading] = useState(false);
 
   const handleInputChange = (id: string, value: string) => {
     if (id == "user-id-input") {
@@ -244,6 +246,7 @@ const Content = () => {
 
   const handleDrawChartClick = async () => {
     if (userID === "") return;
+    setLoading(true);
 
     let rivals = rivalIDs
       .split(",")
@@ -251,9 +254,10 @@ const Content = () => {
       .filter((u) => u !== "");
     rivals = rivals.slice(0, Math.min(rivals.length, MAX_RIVAL));
     const users_ = [userID.trim(), ...rivals];
-
     setUsers(users_);
-    fetchChartData(users_);
+
+    await fetchChartData(users_);
+    setLoading(false);
   };
 
   const fetchChartData = async (users: string[]) => {
@@ -301,13 +305,23 @@ const Content = () => {
             onInputChange={handleInputChange}
           />
 
-          <div>
-            <button
-              className="text-white bg-gradient-to-r from-cyan-400 via-cyan-500 to-cyan-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
-              onClick={handleDrawChartClick}
-            >
-              Draw Chart
-            </button>
+          <div className="flex">
+            <div>
+              <button
+                className="text-white bg-gradient-to-r from-cyan-400 via-cyan-500 to-cyan-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2"
+                onClick={handleDrawChartClick}
+              >
+                Draw Chart
+              </button>
+            </div>
+
+            <RingLoader
+              className="ml-1"
+              size={42}
+              speedMultiplier={1}
+              loading={loading}
+              color="hsla(206, 100%, 60%, 1)"
+            />
           </div>
 
           <div className="w-full mt-10" style={{ maxWidth: "1200px" }}>

@@ -71,6 +71,7 @@ const Chart: React.FC<ChartProps> = ({ users, chartData, onChartChange }) => {
         yanchor: "top",
         x: 0.01,
         y: 1,
+        bgcolor: "rgba(255,255,255,0.3)",
       },
       plot_bgcolor: "rgba(200, 200, 200, 0.15)",
       font: { family: "Courier New, monospace", size: 18 },
