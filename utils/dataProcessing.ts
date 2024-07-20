@@ -7,7 +7,7 @@ import {
 } from "@/config/constants";
 import { PlotData } from "plotly.js-dist-min";
 import { getUserHistory, getUserSubmissions, UserHistory } from "./api";
-import { sleep } from "./utils";
+import { formatDate, sleep } from "./utils";
 
 export const retrieveUniqueACSubs = async (
   user: string,
@@ -28,7 +28,7 @@ export const retrieveUniqueACSubs = async (
 
   subs.forEach((sub: any) => {
     const date = new Date(sub.epoch_second * 1000);
-    sub.date = date.toISOString().split("T")[0];
+    sub.date = formatDate(date);
   });
 
   subs.sort((a: any, b: any) => a.date.localeCompare(b.date));
@@ -49,12 +49,6 @@ export const accumulateYScore = (
   subs: any[],
   period: number
 ): [string[], number[], number[]] => {
-  const formatDate = (date: Date): string => {
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    return `${date.getFullYear()}-${month}-${day}`;
-  };
-
   const accumulate = (dateToScore: { [key: string]: number }): number[] => {
     const sortedEntries = Object.entries(dateToScore).sort(
       ([dateA], [dateB]) => {
@@ -120,11 +114,8 @@ export const makeTooltipText = (dates: string[], subs: any[]): string[] => {
   });
 };
 
-export const makeUserSummary = (
-  userID: string,
-  today: string,
-  subs: any[]
-): UserSummary => {
+export const makeUserSummary = (userID: string, subs: any[]): UserSummary => {
+  const today = formatDate(new Date());
   const todaySubs = subs.filter((sub) => {
     return sub.date === today;
   });
@@ -193,7 +184,7 @@ export const fetchSubData = async (
     });
 
     if (i === 0) {
-      userSummary = makeUserSummary(user, dates[dates.length - 1], subs);
+      userSummary = makeUserSummary(user, subs);
     }
   }
 

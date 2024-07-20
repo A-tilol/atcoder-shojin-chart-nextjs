@@ -8,3 +8,9 @@ export const colorCodeToRGBA = (hex: string, alpha: number) => {
   const b = parseInt("0x" + hex.slice(4, 6));
   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 };
+
+export const formatDate = (date: Date): string => {
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${date.getFullYear()}-${month}-${day}`;
+};
