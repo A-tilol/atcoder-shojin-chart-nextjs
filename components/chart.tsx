@@ -89,7 +89,7 @@ const Chart: React.FC<ChartProps> = ({ users, chartData, onChartChange }) => {
       margin: {
         t: 60,
         l: 70,
-        r: 50,
+        r: 0,
       },
       autosize: true,
       dragmode: false,
