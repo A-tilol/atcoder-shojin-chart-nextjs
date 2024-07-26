@@ -67,7 +67,7 @@ export const CHEERING_WORDS3 = ["ひれふしちゃう"];
 export const TWEET_TEXT_TEMPLATE = `{USER_ID}さんの今日の精進は{SHOJIN}🐾 {CHEERING_WORD}にゃ！
 
 ACした最も難しい問題は {PLOBLEM} {MAX_POINTS}Pts！
-https://atilol.atcoder-shojin-shart-nextjs.github.io
+https://a-tilol.github.io/atcoder-shojin-chart-nextjs
 #AtCoder #AtCoder_Shojin_Chart `;
 
 export const GITHUB_URL =
