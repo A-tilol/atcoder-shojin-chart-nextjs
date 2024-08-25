@@ -77,7 +77,7 @@ const Chart: React.FC<ChartProps> = ({ users, chartData, onChartChange }) => {
       font: { family: "Courier New, monospace", size: 18 },
       xaxis: {
         automargin: true,
-        tickformat: "%Y-%m",
+        tickformat: "%Y\n%m-%d",
         tickangle: -45,
         tickfont: {
           size: 16,
