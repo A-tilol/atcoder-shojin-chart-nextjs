@@ -11,6 +11,7 @@ import {
   CHEERING_WORDS2,
   CHEERING_WORDS3,
   MAX_RIVAL,
+  PERIODS,
   TWEET_TEXT_TEMPLATE,
 } from "@/config/constants";
 import dynamic from "next/dynamic";
@@ -105,17 +106,19 @@ const InputFields: React.FC<InputFieldsProps> = ({
         >
           Period [days]
         </label>
-        <input
-          type="number"
+
+        <select
           id="period-input"
           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-96 p-2.5"
           value={period}
-          min={10}
-          max={10000}
-          step={10}
-          placeholder="90"
           onChange={handleChange}
-        />
+        >
+          {PERIODS.map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
       </div>
     </>
   );
@@ -226,7 +229,7 @@ const Content = () => {
   let [userID, setUserID] = useState("");
   let [rivalIDs, setRivalIDs] = useState("");
   let [users, setUsers] = useState([""]);
-  let [period, setPeriod] = useState(90);
+  let [period, setPeriod] = useState(30);
   let [chartData, setChartData] = useState<ChartData>({
     scoreData: [],
     acData: [],

@@ -25,5 +25,5 @@
 - [ ] 画像コピーボタン
 - [ ] 文字付ツイート
 - [x] トップ説明文
-- [ ] ID→AtCoderID
-- [ ] Period→list
+- [x] ID→AtCoderID
+- [x] Period→list
