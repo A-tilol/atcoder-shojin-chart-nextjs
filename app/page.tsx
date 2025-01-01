@@ -65,7 +65,7 @@ const InputFields: React.FC<InputFieldsProps> = ({
 
   return (
     <>
-      <div className="mb-6">
+      <div className="mb-4">
         <label
           htmlFor="user-id-input"
           className="block mb-2 text-sm font-medium text-gray-900"
@@ -82,7 +82,7 @@ const InputFields: React.FC<InputFieldsProps> = ({
         />
       </div>
 
-      <div className="mb-6">
+      <div className="mb-4">
         <label
           htmlFor="rival-ids-input"
           className="block mb-2 text-sm font-medium text-gray-900"
