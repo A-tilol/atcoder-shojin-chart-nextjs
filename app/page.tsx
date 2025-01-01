@@ -117,7 +117,7 @@ const InputFields: React.FC<InputFieldsProps> = ({
           onChange={handleChange}
         >
           {PERIODS.map((option) => (
-            <option key={option} value={option}>
+            <option className="py-1.5 px-2.5" key={option} value={option}>
               {option}
             </option>
           ))}
