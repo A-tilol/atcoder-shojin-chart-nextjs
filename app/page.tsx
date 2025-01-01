@@ -35,6 +35,16 @@ const TitleHeader = () => {
   );
 };
 
+const Description = () => {
+  return (
+    <>
+      <div className="mb-6">
+        AtCoder上で行った精進の可視化とライバルユーザーとの比較が行えます。
+      </div>
+    </>
+  );
+};
+
 interface InputFieldsProps {
   userID: string;
   rivalIDs: string;
@@ -59,7 +69,7 @@ const InputFields: React.FC<InputFieldsProps> = ({
           htmlFor="user-id-input"
           className="block mb-2 text-sm font-medium text-gray-900"
         >
-          User ID
+          AtCoder ID
         </label>
         <input
           type="text"
@@ -297,6 +307,8 @@ const Content = () => {
       <div className="flex flex-col min-h-screen">
         <div className="flex-grow m-5">
           <TitleHeader />
+
+          <Description />
 
           <InputFields
             userID={userID}
