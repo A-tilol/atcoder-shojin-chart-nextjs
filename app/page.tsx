@@ -126,7 +126,7 @@ const InputFields: React.FC<InputFieldsProps> = ({
 
 interface TweetAreaProps {
   userSummary: UserSummary;
-  onCopyClick: (tweetText: string) => void;
+  onCopyClick: () => void;
 }
 
 const TweetArea: React.FC<TweetAreaProps> = ({ userSummary, onCopyClick }) => {
@@ -167,7 +167,7 @@ const TweetArea: React.FC<TweetAreaProps> = ({ userSummary, onCopyClick }) => {
   }, [userSummary]);
 
   const handleCopyClick = () => {
-    onCopyClick(tweetText);
+    onCopyClick();
   };
 
   return (
@@ -192,13 +192,15 @@ const TweetArea: React.FC<TweetAreaProps> = ({ userSummary, onCopyClick }) => {
         >
           <div className="flex items-center">
             <MdOutlineContentCopy />
-            <span className="ml-2">Copy To Clipboard</span>
+            <span className="ml-2">チャート画像をコピー</span>
           </div>
         </button>
 
         <a
           className="ml-3 mt-2 text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
-          href={`https://x.com/intent/tweet`}
+          href={`https://x.com/intent/tweet?text=${encodeURIComponent(
+            tweetText
+          )}`}
           target="_blank"
         >
           <div className="flex items-center">
@@ -209,10 +211,10 @@ const TweetArea: React.FC<TweetAreaProps> = ({ userSummary, onCopyClick }) => {
       </div>
 
       <div className="mt-3 flex justify-center gray-800">
-        「Copy To Clipboard」を押したあと、「Tweet」を押してこぴぺしてください！
+        「チャート画像をコピー」を押して、画像をツイートにこぴぺしてください！
       </div>
 
-      <div className="mt-20">{/* footer */}</div>
+      {/* <div className="mt-20">footer</div> */}
     </>
   );
 };
@@ -292,10 +294,9 @@ const Content = () => {
     setIsChartDrawn(true);
   };
 
-  const handleCopyToClipboard = (tweetText: string) => {
+  const handleCopyToClipboard = () => {
     const clipboardItem = new ClipboardItem({
       "image/png": chartBlob,
-      "text/plain": new Blob([tweetText], { type: "text/plain" }),
     });
     navigator.clipboard
       .write([clipboardItem])

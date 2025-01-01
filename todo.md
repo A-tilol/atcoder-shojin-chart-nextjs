@@ -22,8 +22,8 @@
 - [x] site icon
 - [x] フィードバック先の追加
 - [x] footer
-- [ ] 画像コピーボタン
-- [ ] 文字付ツイート
+- [x] 画像コピーボタン
+- [x] 文字付ツイート
 - [x] トップ説明文
 - [x] ID→AtCoderID
 - [x] Period→list
