@@ -65,7 +65,7 @@ const Chart: React.FC<ChartProps> = ({ users, chartData, onChartChange }) => {
     }
 
     const layout: Partial<Layout> = {
-      title: "Shojin Chart",
+      title: `Shojin Chart [${metrics}]`,
       legend: {
         xanchor: "left",
         yanchor: "top",
@@ -74,21 +74,25 @@ const Chart: React.FC<ChartProps> = ({ users, chartData, onChartChange }) => {
         bgcolor: "rgba(255,255,255,0.3)",
       },
       plot_bgcolor: "rgba(200, 200, 200, 0.15)",
-      font: { family: "Courier New, monospace", size: 18 },
+      font: { family: "Courier New, monospace", size: 16 },
       xaxis: {
         automargin: true,
         tickformat: "%Y\n%m-%d",
         tickangle: -45,
         tickfont: {
-          size: 16,
+          size: 12,
         },
       },
       yaxis: {
-        title: metrics,
+        automargin: true,
+        tickangle: -45,
+        tickfont: {
+          size: 12,
+        },
       },
       margin: {
         t: 60,
-        l: 70,
+        l: 0,
         r: 0,
       },
       autosize: true,
@@ -163,7 +167,7 @@ const Chart: React.FC<ChartProps> = ({ users, chartData, onChartChange }) => {
     <>
       <div ref={chartRef}></div>
 
-      <div className="mt-10">
+      <div className="mt-6">
         <div className="flex justify-center gray-800 text-2xl">
           Chart Options
         </div>

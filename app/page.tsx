@@ -111,13 +111,13 @@ const InputFields: React.FC<InputFieldsProps> = ({
 
         <select
           id="period-input"
-          className="bg-gray-50 border border-gray-300 text-gray-900 text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block py-1.5 px-2.5"
+          className="bg-gray-50 border border-gray-300 text-gray-900 text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block py-1.5 px-2.5 appearance-none"
           style={{ width: 320 }}
           value={period}
           onChange={handleChange}
         >
           {PERIODS.map((option) => (
-            <option className="py-1.5 px-2.5" key={option} value={option}>
+            <option key={option} value={option}>
               {option}
             </option>
           ))}
@@ -175,7 +175,7 @@ const TweetArea: React.FC<TweetAreaProps> = ({ userSummary, onCopyClick }) => {
 
   return (
     <>
-      <div className="mt-20 flex justify-center gray-800 text-2xl">Share</div>
+      <div className="mt-10 flex justify-center gray-800 text-2xl">Share</div>
 
       <div className="flex justify-center mt-5">
         <textarea
@@ -195,7 +195,7 @@ const TweetArea: React.FC<TweetAreaProps> = ({ userSummary, onCopyClick }) => {
         >
           <div className="flex items-center">
             <MdOutlineContentCopy />
-            <span className="ml-2">チャート画像をコピー</span>
+            <span className="ml-2">画像をコピー</span>
           </div>
         </button>
 
@@ -214,7 +214,7 @@ const TweetArea: React.FC<TweetAreaProps> = ({ userSummary, onCopyClick }) => {
       </div>
 
       <div className="mt-3 flex justify-center gray-800">
-        「チャート画像をコピー」を押して、画像をツイートにこぴぺしてください！
+        「画像をコピー」を押して、精進画像をツイートにこぴぺしてください！
       </div>
 
       {/* <div className="mt-20">footer</div> */}
@@ -350,7 +350,7 @@ const Content = () => {
               onChartChange={handleChartChange}
             />
 
-            <div className="mt-10">
+            <div>
               {isChartDrawn && (
                 <TweetArea
                   userSummary={userSummary}

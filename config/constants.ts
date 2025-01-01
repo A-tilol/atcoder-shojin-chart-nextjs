@@ -12,7 +12,7 @@ export const USER_HISTORY_API_URL =
   "https://utjrulejlf6llrsomasflpiq7e0tkwqg.lambda-url.ap-northeast-1.on.aws";
 
 export const METRICS = {
-  SCORES: "Scores",
+  SCORES: "Points",
   ACS: "ACs",
   RATINGS: "Ratings",
 };
