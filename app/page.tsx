@@ -75,7 +75,8 @@ const InputFields: React.FC<InputFieldsProps> = ({
         <input
           type="text"
           id="user-id-input"
-          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-96 p-2.5"
+          className="bg-gray-50 border border-gray-300 text-gray-900 text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block py-1.5 px-2.5"
+          style={{ width: 320 }}
           value={userID}
           placeholder="snuke"
           onChange={handleChange}
@@ -92,7 +93,8 @@ const InputFields: React.FC<InputFieldsProps> = ({
         <input
           type="text"
           id="rival-ids-input"
-          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-96 p-2.5"
+          className="bg-gray-50 border border-gray-300 text-gray-900 text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block py-1.5 px-2.5"
+          style={{ width: 320 }}
           value={rivalIDs}
           placeholder="chokudai, rng"
           onChange={handleChange}
@@ -109,7 +111,8 @@ const InputFields: React.FC<InputFieldsProps> = ({
 
         <select
           id="period-input"
-          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-96 p-2.5"
+          className="bg-gray-50 border border-gray-300 text-gray-900 text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block py-1.5 px-2.5"
+          style={{ width: 320 }}
           value={period}
           onChange={handleChange}
         >

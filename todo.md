@@ -27,3 +27,5 @@
 - [x] トップ説明文
 - [x] ID→AtCoderID
 - [x] Period→list
+- [ ] select boxのモバイル表示おかしい
+- [ ] コピー画像の右切れてる
